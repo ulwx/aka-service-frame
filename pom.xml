@@ -1,0 +1,50 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.github.ulwx</groupId>
+	<artifactId>aka-service-frame</artifactId>
+	<packaging>jar</packaging>
+	<version>2.0-SNAPSHOT</version>
+	<parent>
+		<groupId>com.github.ulwx</groupId>
+		<artifactId>aka-common-parent</artifactId>
+		<version>2.0-SNAPSHOT</version>
+		<relativePath>../aka-common-parent/pom.xml</relativePath>
+	</parent>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>3.0.2</version>
+				<configuration>
+					<excludes>
+						<exclude>*.xml</exclude>
+						<exclude>aka*.properties</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+
+		</plugins>
+	</build>
+	<dependencies>
+
+		<dependency>
+			<groupId>com.github.ulwx</groupId>
+			<artifactId>aka-admin-base</artifactId>
+		</dependency>
+
+
+		<dependency>
+			<groupId>com.auth0</groupId>
+			<artifactId>java-jwt</artifactId>
+			<version>3.4.0</version>
+		</dependency>
+
+	</dependencies>
+
+</project>
+
