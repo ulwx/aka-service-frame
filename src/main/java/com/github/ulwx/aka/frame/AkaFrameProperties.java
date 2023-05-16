@@ -14,21 +14,14 @@ import java.util.Map;
 public class AkaFrameProperties implements InitializingBean {
     public final static String  FRAME_PROPERTIES_PREFX="aka.frame";
     @NestedConfigurationProperty
-    private List<Protocol> protocols=new ArrayList<>();
-    private String globalErrorClass;
-    @NestedConfigurationProperty
-    private Request request=new Request();
-    @NestedConfigurationProperty
-    private NotifyRequest notifyRequest=new NotifyRequest();
-    @NestedConfigurationProperty
-    private Storage storage=new Storage();
-
-
-    public List<Protocol> getProtocols() {
+    private List<ProtocolProperties> protocols=new ArrayList<>();
+    private String globalErrorClass="";
+    private Map<String, RequestHandler> handlers=new HashMap<>();
+    public List<ProtocolProperties> getProtocols() {
         return protocols;
     }
 
-    public void setProtocols(List<Protocol> protocols) {
+    public void setProtocols(List<ProtocolProperties> protocols) {
         this.protocols = protocols;
     }
 
@@ -40,28 +33,13 @@ public class AkaFrameProperties implements InitializingBean {
         this.globalErrorClass = globalErrorClass;
     }
 
-    public Request getRequest() {
-        return request;
+
+    public Map<String, RequestHandler> getHandlers() {
+        return handlers;
     }
 
-    public void setRequest(Request request) {
-        this.request = request;
-    }
-
-    public NotifyRequest getNotifyRequest() {
-        return notifyRequest;
-    }
-
-    public void setNotifyRequest(NotifyRequest notifyRequest) {
-        this.notifyRequest = notifyRequest;
-    }
-
-    public Storage getStorage() {
-        return storage;
-    }
-
-    public void setStorage(Storage storage) {
-        this.storage = storage;
+    public void setHandlers(Map<String, RequestHandler> handlers) {
+        this.handlers = handlers;
     }
 
     @Override
@@ -81,26 +59,20 @@ public class AkaFrameProperties implements InitializingBean {
     }
     public static class Storage{
         @NestedConfigurationProperty
-        private InsertInterlog insertInterlog=new InsertInterlog();
-        @NestedConfigurationProperty
-        private InsertNotifylog insertNotifylog=new InsertNotifylog();
+        private LogConfig logConfig=new LogConfig();
         @NestedConfigurationProperty
         private Database database=new Database();
 
-        public InsertInterlog getInsertInterlog() {
-            return insertInterlog;
+        public LogConfig getLogConfig() {
+            return logConfig;
         }
 
-        public void setInsertInterlog(InsertInterlog insertInterlog) {
-            this.insertInterlog = insertInterlog;
+        public void setLogConfig(LogConfig logConfig) {
+            this.logConfig = logConfig;
         }
 
-        public InsertNotifylog getInsertNotifylog() {
-            return insertNotifylog;
-        }
-
-        public void setInsertNotifylog(InsertNotifylog insertNotifylog) {
-            this.insertNotifylog = insertNotifylog;
+        public Database getDatabase() {
+            return database;
         }
 
         public Database getDatabse() {
@@ -111,7 +83,7 @@ public class AkaFrameProperties implements InitializingBean {
             this.database = databse;
         }
     }
-    public static class InsertInterlog{
+    public static class LogConfig{
         private List<String> excludeProtocol=new ArrayList<>();
         public List<String> getExcludeProtocol() {
             return excludeProtocol;
@@ -120,52 +92,25 @@ public class AkaFrameProperties implements InitializingBean {
             this.excludeProtocol = excludeProtocol;
         }
     }
-    public static class InsertNotifylog{
-        private List<String> excludeProtocol=new ArrayList<>();
-        public List<String> getExcludeProtocol() {
-            return excludeProtocol;
-        }
-        public void setExcludeProtocol(List<String> excludeProtocol) {
-            this.excludeProtocol = excludeProtocol;
-        }
-    }
-    public static class NotifyRequest{
-        private String reqcodeArgname="";
-        private String callbackUrl="";
-        private Map<String,String > parsers=new HashMap<>();
 
-        public String getReqcodeArgname() {
-            return reqcodeArgname;
-        }
-
-        public void setReqcodeArgname(String reqcodeArgname) {
-            this.reqcodeArgname = reqcodeArgname;
-        }
-
-        public Map<String, String> getParsers() {
-            return parsers;
-        }
-
-        public void setParsers(Map<String, String> parsers) {
-            this.parsers = parsers;
-        }
-
-        public String getCallbackUrl() {
-            return callbackUrl;
-        }
-
-        public void setCallbackUrl(String callbackUrl) {
-            this.callbackUrl = callbackUrl;
-        }
-    }
-    public static class Request{
+    public static class RequestHandler {
         private  Sign sign=new Sign();
         private JwtVerify jwtVerify=new JwtVerify();
         private Debug debug=null;
         private List<String> processors=new ArrayList<>();
+        @NestedConfigurationProperty
+        private Storage storage=new Storage();
 
         public Sign getSign() {
             return sign;
+        }
+
+        public Storage getStorage() {
+            return storage;
+        }
+
+        public void setStorage(Storage storage) {
+            this.storage = storage;
         }
 
         public void setSign(Sign sign) {
@@ -197,6 +142,16 @@ public class AkaFrameProperties implements InitializingBean {
         }
     }
     public static class Debug{
+        private Boolean enable=false;
+
+        public Boolean getEnable() {
+            return enable;
+        }
+
+        public void setEnable(Boolean enable) {
+            this.enable = enable;
+        }
+
         private String ndjh="";
         private List<String> ipAccessWhitelist=new ArrayList<>();
 
@@ -218,7 +173,7 @@ public class AkaFrameProperties implements InitializingBean {
 
     }
     public  static class JwtVerify{
-        private Boolean enable=true;
+        private Boolean enable=false;
         private String verifyPluginClass="";
         private List<String> excludeProtocol=new ArrayList<>();
         private String secret="";
@@ -257,7 +212,7 @@ public class AkaFrameProperties implements InitializingBean {
     }
 
     public static class Sign{
-        private Boolean enable=true;
+        private Boolean enable=false;
         private List<String> excludeProtocol=new ArrayList<>();
         private String requestSignKey="";
 
@@ -285,10 +240,11 @@ public class AkaFrameProperties implements InitializingBean {
             this.requestSignKey = requestSignKey;
         }
     }
-    public static class Protocol{
+    public static class ProtocolProperties {
         private String  packageName="";
         private String namesapce="";
         private String errorClass="";
+        private  String handler="";
 
         public String getNamesapce() {
             return namesapce;
@@ -312,6 +268,14 @@ public class AkaFrameProperties implements InitializingBean {
 
         public void setErrorClass(String errorClass) {
             this.errorClass = errorClass;
+        }
+
+        public String getHandler() {
+            return handler;
+        }
+
+        public void setHandler(String handler) {
+            this.handler = handler;
         }
     }
 }

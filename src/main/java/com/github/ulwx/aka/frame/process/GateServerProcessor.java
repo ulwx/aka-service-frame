@@ -1,13 +1,12 @@
 package com.github.ulwx.aka.frame.process;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.log4j.Logger;
-
-import com.ulwx.tool.StringUtils;
 import com.github.ulwx.aka.frame.protocol.res.BaseRes;
 import com.github.ulwx.aka.frame.protocol.utils.UiFrameConstants;
 import com.github.ulwx.aka.frame.utils.NetTools;
+import com.ulwx.tool.StringUtils;
+import org.apache.log4j.Logger;
+
+import javax.servlet.http.HttpServletRequest;
 
 
 public class GateServerProcessor extends Processor {
@@ -24,15 +23,15 @@ public class GateServerProcessor extends Processor {
 		phoneFromGateWay=getPhoneFromGateWay(request);
 
 		if(StringUtils.containsIgnoreCase(gateKey, "WAP")){
-			context.putToGenArgs(UiFrameConstants.PROTOCOL_REQ_GATEWAY_IS_CMWAP, true );
+			context.setBoolean(UiFrameConstants.PROTOCOL_REQ_GATEWAY_IS_CMWAP, true );
 		}else{
-			context.putToGenArgs(UiFrameConstants.PROTOCOL_REQ_GATEWAY_IS_CMWAP, false );
+			context.setBoolean(UiFrameConstants.PROTOCOL_REQ_GATEWAY_IS_CMWAP, false );
 		}
-		context.putToGenArgs(UiFrameConstants.PROTOCOL_REQ_GATEWAY_PHONE,  phoneFromGateWay );
+		context.setString(UiFrameConstants.PROTOCOL_REQ_GATEWAY_PHONE,  phoneFromGateWay );
 
-		context.putToGenArgs(UiFrameConstants.PROTOCOL_REQ_REMOTE_IP, gateIP );
+		context.setString(UiFrameConstants.PROTOCOL_REQ_REMOTE_IP, gateIP );
 		// 网关关键字
-		context.putToGenArgs(UiFrameConstants.PROTOCOL_REQ_GATEWAY_KEY, gateKey );
+		context.setString(UiFrameConstants.PROTOCOL_REQ_GATEWAY_KEY, gateKey );
 		//log.debug("---"+CollectionUtils.toString(parmMap));
 		
 		return null;

@@ -9,7 +9,7 @@ import com.github.ulwx.aka.frame.protocol.utils.IError;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class ForwardBean  extends IUFrameBean<ForwardBean> {
+public  class ForwardBean  extends IUFrameBean<ForwardBean> {
 	
 	private String redirectURL;
 	
@@ -105,11 +105,11 @@ public abstract class ForwardBean  extends IUFrameBean<ForwardBean> {
 	}
 
 
-//	@Override
-//	public Object getData() {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
+	@Override
+	public Object getData() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 	public static void main(String[] args) {
 		ForwardBean rb=new NoDataForwardBean();
@@ -128,7 +128,7 @@ public abstract class ForwardBean  extends IUFrameBean<ForwardBean> {
 			// TODO Auto-generated method stub
 			return null;
 		}
-		
+
 	}
 
 	

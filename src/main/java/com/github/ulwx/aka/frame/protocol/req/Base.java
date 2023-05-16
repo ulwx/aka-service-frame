@@ -1,7 +1,6 @@
 package com.github.ulwx.aka.frame.protocol.req;
 
 import com.github.ulwx.aka.frame.protocol.utils.UiFrameConstants;
-import com.github.ulwx.aka.frame.utils.JwtInfo;
 import com.ulwx.tool.FileUtils;
 import com.ulwx.tool.ObjectUtils;
 import com.ulwx.tool.RequestUtils;
@@ -68,14 +67,7 @@ public  class Base {
 		return request;
 
 	}
-	
 
-	
-	public JwtInfo getJwtInfo() {
-		JwtInfo jwtInfo = (JwtInfo)this.getRequest().getObject(UiFrameConstants.PROTOCOL_REQ_JWTINFO);
-		return jwtInfo;
-	}
-	
 
 	/**
 	 * 设置请求注入

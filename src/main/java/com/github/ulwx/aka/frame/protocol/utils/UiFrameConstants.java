@@ -9,7 +9,6 @@ public class UiFrameConstants {
 
 	// 协议处理类用到的常量
 	public static String PROTOCOL_REQ_GATEWAY_KEY = "pro_req_key";
-	
 	public static String PROTOCOL_REQ_GATEWAY_IS_CMWAP = "pro_req_is_cmnet";
 	public static String PROTOCOL_REQ_CARRIER = "pro_req_carrier";
 	public static String PROTOCOL_REQ_GATEWAY_PHONE = "pro_req_phone_gateway";
@@ -29,7 +28,6 @@ public class UiFrameConstants {
 	public static String PROTOCOL_REQ_PARM_TEST = "test";
 	public static String PROTOCOL_REQ_NAME_SPACE = "namespace";
 	public static String PROTOCOL_REQ_REMOTE_IP = "remoteIp";
-	
 	public static String PROTOCOL_REQ_NDJH = "ndjh";
 
 	public static String PROTOCOL_KEY_JSP_POST_BEAN = "jspPostBean";
@@ -59,15 +57,15 @@ public class UiFrameConstants {
 
 	public static class InterType {
 		public static String GateWay = "OutGW";// 对外网关转接，对接第三方网关接口
-		public static String Direct = "OutDirect";// 对外直连转接没，对接第三方直连接口
+		public static String Direct = "OutDirect";// 对外直连转接，对接第三方直连接口
 		public static String JSON="JSON";//本地JSON返回接口
-		public static String JSPForm="JSPForm";//本地form页面提交接口
 		public static String JSPPost="JSPPost";//本地Post提交接口
 		public static String Redirect="Redirect";//本地跳转接口
 		public static String STR="STR"; //本地返回文本接口
 		public static String DownLoad="DownLoad";//本地下载接口
 		public static String Forward="Forward";//本地forward接口
 		public static String NONE="None";//未知
+		public static String CallBack= "CallBack"; //回调，含异步回调和网关回调
 	}
 	public static class HandleStatus {
 

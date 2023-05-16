@@ -1,6 +1,6 @@
 package com.github.ulwx.aka.frame.process;
 
-import com.github.ulwx.aka.frame.AkaFrameProperties;
+import com.github.ulwx.aka.frame.UIFrameAppConfig;
 import com.github.ulwx.aka.frame.protocol.res.BaseRes;
 import com.github.ulwx.aka.webmvc.BeanGet;
 import org.apache.log4j.Logger;
@@ -18,8 +18,8 @@ public  class ProcessorManager {
 
 	public  BaseRes process(HttpServletRequest request,ProcessContext context)throws Exception
 	{
-		AkaFrameProperties akaFrameProperties= BeanGet.getBean(AkaFrameProperties.class,request);
-		List<String> processors=akaFrameProperties.getRequest().getProcessors();
+		UIFrameAppConfig akaFrameProperties= BeanGet.getBean(UIFrameAppConfig.class,request);
+		List<String> processors=akaFrameProperties.getRequestHander().getProcessors();
 		for(int i=0; i<processors.size(); i++){
 			String className=processors.get(i).trim();
 			Processor p=(Processor)Class.forName(className).newInstance();

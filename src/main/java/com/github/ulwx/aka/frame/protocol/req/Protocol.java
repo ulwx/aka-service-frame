@@ -5,7 +5,7 @@ import com.github.ulwx.aka.frame.annotation.Comment;
 import com.github.ulwx.aka.frame.annotation.InterfaceTest;
 import com.github.ulwx.aka.frame.annotation.Validate;
 import com.github.ulwx.aka.frame.protocol.utils.ReqContext;
-import com.github.ulwx.aka.frame.utils.UIFrameAppConfig;
+import com.github.ulwx.aka.frame.UIFrameAppConfig;
 import com.github.ulwx.aka.webmvc.BeanGet;
 import com.github.ulwx.aka.webmvc.exception.ServiceException;
 import com.ulwx.tool.RequestUtils;
@@ -171,7 +171,7 @@ public abstract class Protocol extends Base{
 			RequestUtils requestUtils=ReqContext.getRequestUtis();
 			HttpServletRequest httpServletRequest=ReqContext.getHttpServletRequest();
 			UIFrameAppConfig uiFrameAppConfig=BeanGet.getBean(UIFrameAppConfig.class);
-			AkaFrameProperties.Protocol protocolInfo = uiFrameAppConfig.getProtocolInfo(this.getClass());
+			AkaFrameProperties.ProtocolProperties protocolInfo = uiFrameAppConfig.getProtocolInfo(this.getClass());
 			String clssName = this.getClass().getName();
 			if(protocolInfo!=null) {
 				String suf = StringUtils.trimLeadingString(clssName, protocolInfo.getPackageName());

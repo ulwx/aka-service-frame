@@ -5,7 +5,7 @@ import com.github.ulwx.aka.frame.annotation.Comment;
 import com.github.ulwx.aka.frame.protocol.req.Protocol;
 import com.github.ulwx.aka.frame.protocol.res.NullDataRes;
 import com.github.ulwx.aka.frame.utils.ModuleInfo;
-import com.github.ulwx.aka.frame.utils.UIFrameAppConfig;
+import com.github.ulwx.aka.frame.UIFrameAppConfig;
 import com.github.ulwx.aka.webmvc.BeanGet;
 import com.ulwx.tool.ClassUtils;
 import com.ulwx.tool.ObjectUtils;

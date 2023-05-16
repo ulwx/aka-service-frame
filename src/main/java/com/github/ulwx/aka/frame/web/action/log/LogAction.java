@@ -2,9 +2,8 @@ package com.github.ulwx.aka.frame.web.action.log;
 
 import com.github.ulwx.aka.admin.domain.cus.CbEasyUIGridModel;
 import com.github.ulwx.aka.dbutils.tool.PageBean;
-import com.github.ulwx.aka.frame.protocol.services.dao.impl.model.InterLogNotify;
-import com.github.ulwx.aka.frame.protocol.services.dao.impl.model.InterLogNotifyMore;
-import com.github.ulwx.aka.frame.protocol.services.dao.impl.model.InterLogReq;
+import com.github.ulwx.aka.frame.services.dao.impl.model.InterLogNotifyMore;
+import com.github.ulwx.aka.frame.services.dao.impl.model.InterLogReq;
 import com.github.ulwx.aka.frame.web.action.log.services.service.LogService;
 import com.github.ulwx.aka.webmvc.web.action.ActionSupport;
 import com.ulwx.tool.RequestUtils;
@@ -16,31 +15,6 @@ public class LogAction extends ActionSupport {
     private static final long serialVersionUID = 6474449672706897629L;
     public static Logger logger = Logger.getLogger(LogAction.class);
 
-
-    public String getLogNotifyList(){
-        RequestUtils ru = this.getRequestUtils();
-        //分页信息
-        Integer pageNum = ru.getInt("page");
-        Integer perPage = ru.getInt("rows");
-        PageBean pb = new PageBean();
-
-        String query = ru.getTrimString("query");
-        String condition = ru.getTrimString("condition");
-        String startTime = ru.getTrimString("startTime");
-        String endTime = ru.getTrimString("endTime");
-
-        List<InterLogNotify> list = null;
-        CbEasyUIGridModel<InterLogNotify> model = new CbEasyUIGridModel<>();
-        try{
-            list = beanGet.bean(LogService.class).getLogNotifyList(query,condition,startTime,endTime,pageNum,perPage,pb);
-            model.setTotal(pb.getTotal());
-            model.setRows(list);
-            return this.JSON_SUC(model);
-        }catch(Exception e){
-            logger.error("",e);
-        }
-        return this.JSON_ERR("获取失败");
-    }
 
     public String getLogNotifyMoreList(){
         RequestUtils ru = this.getRequestUtils();

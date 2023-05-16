@@ -1,6 +1,6 @@
-<%@page import="com.github.ulwx.aka.frame.utils.UIFrameAppConfig"%>
+<%@page import="com.github.ulwx.aka.frame.UIFrameAppConfig"%>
 <%@page import="com.github.ulwx.aka.frame.protocol.utils.UiFrameConstants"%>
-<%@page import="com.github.ulwx.aka.frame.servlet.support.CallbackBean"%>
+<%@page import="com.github.ulwx.aka.frame.protocol.res.CallbackBean"%>
 <%@page import="com.ulwx.tool.EscapeUtil"%>
 <%@page import="com.ulwx.tool.ObjectUtils"%>
 <%@page import="com.ulwx.tool.StringUtils"%>

@@ -51,18 +51,15 @@ public class InterfaceServlet extends HttpServlet {
 			String strs[]=tempStr.split("/");
 			String namespaceKey=strs[1];
 			log.debug("namespaceKey="+namespaceKey);
-			pc.putToGenArgsAppend(UiFrameConstants.PROTOCOL_REQ_NAME_SPACE, namespaceKey);
+			pc.setString(UiFrameConstants.PROTOCOL_REQ_NAME_SPACE, namespaceKey);
 
 			BaseRes errorBean = ProcessorManager.instance.process(request, pc);
-			
 			if (errorBean == null) {
-				ru = pc.getRequest();////////
-
+				ru = pc.getRu();////////
 				protocolid = ru.getString(UiFrameConstants.PROTOCOL_REQ_PARM_BN);
 				if(StringUtils.isEmpty(protocolid)){
 					throw new Exception("协议号为空！");
 				}
-
 				log.debug("map=" + CollectionUtils.toString(ru.getrParms()));
 				String requestQuery = ru.getString(UiFrameConstants.PROTOCOL_REQ_QUERY_STR);
 				requestURL = request.getRequestURL() + "?" + requestQuery;
@@ -85,8 +82,9 @@ public class InterfaceServlet extends HttpServlet {
 			contentLength = 0;
 			result = ObjectUtils.toJsonString(BaseResBean.ERROR(ex.getMessage()));
 		}
-		resp.setContentType("application/json;charset=utf-8");
+
 		if (StringUtils.hasText(result)) {
+			resp.setContentType("application/json;charset=utf-8");
 			try {
 				contentLength = result.getBytes("utf-8").length;
 				resp.setHeader("Content-Length", contentLength + "");
@@ -97,7 +95,6 @@ public class InterfaceServlet extends HttpServlet {
 			} catch (IOException e) {
 				log.error(e,e);
 			}
-
 		}
 		log.debug("+++final : return size=" + contentLength);
 		if(retBean!=null) {
@@ -119,17 +116,7 @@ public class InterfaceServlet extends HttpServlet {
 			request.setAttribute(UiFrameConstants.PROTOCOL_KEY_JSP_PRO_OBJ, reqObj);
             dispatcher.forward(request, resp);
             result="";
-		}else if(reqObj instanceof JSPFormProtocal ) {
-			
-			String forwardURL=UiFrameConstants.FORWARD_FORM_JSP;
-			
-			RequestDispatcher dispatcher = request.getRequestDispatcher(forwardURL);
-			request.setAttribute(UiFrameConstants.PROTOCOL_KEY_JSP_FORM_BEAN, retBean);
-			request.setAttribute(UiFrameConstants.PROTOCOL_KEY_JSP_PRO_OBJ, reqObj);
-            dispatcher.forward(request, resp);
-            result="";
-		}
-		else if(reqObj instanceof ForwardProtocal ) {
+		} else if(reqObj instanceof ForwardProtocal ) {
 			
 			String forwardURL=UiFrameConstants.FORWARD_TO_JSP;
 			

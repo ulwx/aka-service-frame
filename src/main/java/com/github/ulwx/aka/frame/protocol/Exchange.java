@@ -1,6 +1,7 @@
 package com.github.ulwx.aka.frame.protocol;
 
 import com.github.ulwx.aka.frame.AkaFrameProperties;
+import com.github.ulwx.aka.frame.protocol.req.CallBackProtocal;
 import com.github.ulwx.aka.webmvc.BeanGet;
 import com.ulwx.tool.*;
 import com.github.ulwx.aka.frame.annotation.Validate;
@@ -12,8 +13,8 @@ import com.github.ulwx.aka.frame.protocol.res.BaseRes;
 import com.github.ulwx.aka.frame.protocol.res.BaseResBean;
 import com.github.ulwx.aka.frame.protocol.utils.ReqContext;
 import com.github.ulwx.aka.frame.protocol.utils.UiFrameConstants;
-import com.github.ulwx.aka.frame.servlet.support.services.service.InterLogService;
-import com.github.ulwx.aka.frame.utils.UIFrameAppConfig;
+import com.github.ulwx.aka.frame.services.service.InterLogService;
+import com.github.ulwx.aka.frame.UIFrameAppConfig;
 import org.apache.log4j.Logger;
 
 import java.io.File;
@@ -61,7 +62,7 @@ public class Exchange {
 				}
 				UIFrameAppConfig uiFrameAppConfig=
 						BeanGet.getBean(UIFrameAppConfig.class,ReqContext.getHttpServletRequest());
-				AkaFrameProperties.Protocol protocolInfo=uiFrameAppConfig.getProtocolInfo(namespace);
+				AkaFrameProperties.ProtocolProperties protocolInfo=uiFrameAppConfig.getProtocolInfo(namespace);
 				String className = protocolInfo.getPackageName()+ "." + ver + "." + modlue + "." + Protocal;
 				Class cls = Class.forName(className);
 				return (Protocol) cls.newInstance();
@@ -336,7 +337,11 @@ public class Exchange {
 
 							} catch (Exception e) {
 								logger.error("" + e, e);
-								javaBean = BaseResBean.ERROR("重复请求【" + e.getMessage() + "】");
+								javaBean = BaseResBean.ERROR("重复请求【" + e.getMessage() + "】" + ObjectUtils.toString(pro));
+								//处理重复请求
+								if(pro instanceof CallBackProtocal){
+
+								}
 								return javaBean;
 
 							}
@@ -344,7 +349,7 @@ public class Exchange {
 							javaBean = ((IProtocol) pro).genBean();
 
 							if (interLogId > 0) {
-								BeanGet.getBean(InterLogService.class).updateLog(pro.namespace, interLogId, javaBean, start);
+								BeanGet.getBean(InterLogService.class).updateLog(interLogId, javaBean, start);
 							}
 
 						}

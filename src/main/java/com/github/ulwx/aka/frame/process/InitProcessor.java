@@ -10,9 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.Part;
 import java.io.File;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
 
 public class InitProcessor extends Processor {
 	private static Logger log = Logger.getLogger(InitProcessor.class);
@@ -22,7 +20,6 @@ public class InitProcessor extends Processor {
 
 		String queryStr = request.getQueryString();
 		try {
-			Map<String, String[]> bodyMap = new HashMap<>();
 			String contentType = StringUtils.trim(request.getContentType());
 			if (contentType.contains("multipart/")) {
 				Collection<Part> parts = request.getParts();
@@ -47,9 +44,7 @@ public class InitProcessor extends Processor {
 						
 						file=new File(file.getAbsolutePath());
 						if(file.exists()){
-							context.putToGenArgsAppend(argName, file);
-							context.putToGenArgsAppend(argName+"FileName", fileName);//ContentType
-							context.putToGenArgsAppend(argName+"ContentType", partContentType);
+							context.setFile(argName, file,fileName,partContentType);
 						}
 						long siez = part.getSize();
 						for (String headerName : part.getHeaderNames())
@@ -63,16 +58,13 @@ public class InitProcessor extends Processor {
 			if (contentType.contains("application/json")) {
 				try {
 					bodyStr = IOUtils.toString(request.getInputStream(), "utf-8", true);
-					bodyMap.put(RequestUtils.REQUEST_BODY_STR, new String[]{bodyStr});
+					context.setBody(bodyStr);
 				} catch (Exception e) {
 					log.error("" + e, e);
 				}
 			}
-
-			bodyMap = request.getParameterMap();// 得到query str参数
-
-			Map<String, String[]> totalMap = new TreeMap<String, String[]>();
-			totalMap.putAll(bodyMap);
+			Map<String,String[]> parameterMap=request.getParameterMap();
+			context.putAll(parameterMap);
 			String uri = request.getRequestURI();
 			log.debug("uri=[" + uri + "]");
 			log.debug("query string=[" + queryStr + "]");
@@ -87,25 +79,21 @@ public class InitProcessor extends Processor {
 			log.debug("ver=" + ver);
 			log.debug("protocol=" + protocolName);
 			log.debug("module=" + module);
-			context.putToGenArgs(UiFrameConstants.PROTOCOL_REQ_PARM_BN, protocolName);
-			context.putToGenArgs(UiFrameConstants.PROTOCOL_REQ_PARM_VER, ver);
-			context.putToGenArgs(UiFrameConstants.PROTOCOL_REQ_PARM_MOD_NAME, module);
-
-			context.setReqArgs(totalMap);
-
+			context.setString(UiFrameConstants.PROTOCOL_REQ_PARM_BN, protocolName);
+			context.setString(UiFrameConstants.PROTOCOL_REQ_PARM_VER, ver);
+			context.setString(UiFrameConstants.PROTOCOL_REQ_PARM_MOD_NAME, module);
 			// 设置query str参数 ，要考虑到post 的情况
-
-			context.putToGenArgs(UiFrameConstants.PROTOCOL_REQ_QUERY_STR, new String[] { queryStr });
+			context.setString(UiFrameConstants.PROTOCOL_REQ_QUERY_STR, queryStr);
 			if (log.isDebugEnabled()) {
 				try {
-					log.debug("parmater Map=" + ObjectUtils.toString(totalMap));
+					log.debug("parmater Map=" + ObjectUtils.toString(parameterMap));
 				} catch (Exception e) {
 					log.error("", e);
 				}
 			}
 
 		} catch (Exception e) {
-			log.error("" + CollectionUtils.toString(context.getReqArgs()), e);
+			log.error("" + ObjectUtils.toString(context),e);
 			return BaseResBean.ERROR("解析参数出错！");
 		}
 

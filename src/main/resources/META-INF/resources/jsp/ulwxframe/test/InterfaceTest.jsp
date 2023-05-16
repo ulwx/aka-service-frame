@@ -9,6 +9,7 @@
 <%@ page import="com.github.ulwx.aka.frame.doc.ProtocolClassInfo" %>
 <%@ page import="com.github.ulwx.aka.frame.doc.ProtocolClassUtils" %>
 <%@ page import="com.github.ulwx.aka.frame.doc.VersionModules" %>
+<%@ page import="com.github.ulwx.aka.frame.UIFrameAppConfig" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
          pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -148,7 +149,7 @@
    		   	Set<String> keys=properties.keySet();
    		   	for(String key:keys){ 
    		   	   VersionModules[] VersionModulesList = ProtocolClassUtils.getProtocolBH(key);
-   		   	   String testip=UIFrameAppConfig.Property.getValue(key,UIFrameAppConfig.Property.TESTIP);
+   		   	   String testip=UIFrameAppConfig.Property.getValue(key, UIFrameAppConfig.Property.TESTIP);
    		   	   if(StringUtils.isEmpty(testip)){
    		   			String reqUrl=request.getRequestURL().toString();
    		   			String reqUri=request.getRequestURI();

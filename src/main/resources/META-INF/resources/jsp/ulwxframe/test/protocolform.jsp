@@ -1,4 +1,4 @@
-<%@page import="com.github.ulwx.aka.frame.utils.UIFrameAppConfig"%>
+<%@page import="com.github.ulwx.aka.frame.UIFrameAppConfig"%>
 <%@page import="com.github.ulwx.aka.frame.annotation.InterfaceTest"%>
 <%@page import="com.github.ulwx.aka.frame.annotation.Validate"%>
 <%@page import="com.github.ulwx.aka.frame.annotation.Validate.ValidateType"%>

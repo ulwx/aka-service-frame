@@ -1,8 +1,8 @@
 <%@page import="com.github.ulwx.aka.frame.protocol.res.ForwardBean"%>
 <%@page import="com.github.ulwx.aka.frame.protocol.req.Protocol"%>
-<%@page import="com.github.ulwx.aka.frame.utils.UIFrameAppConfig"%>
+<%@page import="com.github.ulwx.aka.frame.UIFrameAppConfig"%>
 <%@page import="com.github.ulwx.aka.frame.protocol.utils.UiFrameConstants"%>
-<%@page import="com.github.ulwx.aka.frame.servlet.support.CallbackBean"%>
+<%@page import="com.github.ulwx.aka.frame.protocol.res.CallbackBean"%>
 
 <%@page import="com.github.ulwx.aka.frame.protocol.res.BaseRes"%>
 <%@page import="java.util.Set"%>

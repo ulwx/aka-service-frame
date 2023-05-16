@@ -1,6 +1,6 @@
 package com.github.ulwx.aka.frame.process;
 
-import com.github.ulwx.aka.frame.AkaFrameProperties;
+import com.github.ulwx.aka.frame.UIFrameAppConfig;
 import com.github.ulwx.aka.frame.protocol.res.BaseRes;
 import com.github.ulwx.aka.frame.protocol.res.BaseResBean;
 import com.github.ulwx.aka.frame.protocol.utils.IError;
@@ -29,23 +29,23 @@ public class JwtVerifyProcessor extends Processor {
 	@Override
 	public BaseRes process(HttpServletRequest request, ProcessContext context) throws Exception {
 
-		String namespaceKey = (String) context.getFromGenArgs(UiFrameConstants.PROTOCOL_REQ_NAME_SPACE);
+		String namespace = context.getString(UiFrameConstants.PROTOCOL_REQ_NAME_SPACE);
 		BaseRes javaBean = null;
-		AkaFrameProperties akaFrameProperties=BeanGet.getBean(AkaFrameProperties.class,request);
+		UIFrameAppConfig akaFrameProperties= BeanGet.getBean(UIFrameAppConfig.class,request);
 		HttpSession session = request.getSession();
 		Object userInfo = session.getAttribute(WebMvcCbConstants.SessionKey.USER);
 		if (userInfo != null) {// 说明是接口登陆后
 			return null;
 		}
-		if(akaFrameProperties.getRequest().getDebug()!=null) {
-			String ndjh = context.getStringFromReqArgs("ndjh");
-			String NDJH = akaFrameProperties.getRequest().getDebug().getNdjh();
+		if(akaFrameProperties.getRequestHander().getDebug()!=null) {
+			String ndjh = context.getString("ndjh");
+			String NDJH = akaFrameProperties.getRequestHander().getDebug().getNdjh();
 			if ((StringUtils.hasText(NDJH) && NDJH.equals(ndjh))) {// 忽略验证
 				log.debug("后门：[" + NDJH + "," + ndjh + "]jwt验证忽略");
 				// 看是否在白名单里
-				List<String> whitelist = akaFrameProperties.getRequest().getDebug().getIpAccessWhitelist();
+				List<String> whitelist = akaFrameProperties.getRequestHander().getDebug().getIpAccessWhitelist();
 				if (!whitelist.isEmpty()) {
-					String remoteIp = (String) context.getFromGenArgs(UiFrameConstants.PROTOCOL_REQ_REMOTE_IP);
+					String remoteIp = context.getString(UiFrameConstants.PROTOCOL_REQ_REMOTE_IP);
 					log.debug("remoteIp=" + remoteIp);
 					for (int i = 0; i < whitelist.size(); i++) {
 						String compareIp = whitelist.get(i).replaceAll("\\.\\*", "");
@@ -59,15 +59,15 @@ public class JwtVerifyProcessor extends Processor {
 
 			}
 		}
-		Boolean isJwtValidate = akaFrameProperties.getRequest().getJwtVerify().getEnable();
+		Boolean isJwtValidate = akaFrameProperties.getRequestHander().getJwtVerify().getEnable();
 		if(isJwtValidate!=null && !isJwtValidate) {
 			return null;
 		}
 		try {
 			log.debug("jwt验证");
-			List<String> excludes=akaFrameProperties.getRequest().getJwtVerify().getExcludeProtocol();
-			String module = (String) context.getFromGenArgs(UiFrameConstants.PROTOCOL_REQ_PARM_MOD_NAME);//
-			String protocol = (String) context.getFromGenArgs(UiFrameConstants.PROTOCOL_REQ_PARM_BN); // context.getStringInReqArgs("protocol");
+			List<String> excludes=akaFrameProperties.getRequestHander().getJwtVerify().getExcludeProtocol();
+			String module = context.getString(UiFrameConstants.PROTOCOL_REQ_PARM_MOD_NAME);//
+			String protocol =  context.getString(UiFrameConstants.PROTOCOL_REQ_PARM_BN); // context.getStringInReqArgs("protocol");
 			String compareStr = module + "." + protocol;
 			if (StringUtils.hasText(protocol)) {
 
@@ -91,7 +91,7 @@ public class JwtVerifyProcessor extends Processor {
 
 			String authHeader = request.getHeader("Authorization");
 			if (StringUtils.isEmpty(authHeader)) {
-				authHeader = context.getStringFromReqArgs("Authorization");
+				authHeader = context.getString("Authorization");
 			}
 			log.debug("Authorization=" + authHeader);
 			if (authHeader == null || !authHeader.startsWith("Bearer ")) {
@@ -105,17 +105,17 @@ public class JwtVerifyProcessor extends Processor {
 				return BaseResBean.ERROR(IError.JWT_VERIFY_FAIL, "参数有错误！[Authorization验证出错]");
 			}
 			JwtInfo jwtInfo = JwtHelper.parseJWT(jwt,
-					akaFrameProperties.getRequest().getJwtVerify().getSecret()
+					akaFrameProperties.getRequestHander().getJwtVerify().getSecret()
 			);
 
-			String deviceid = context.getStringFromReqArgs(JwtInfo.DEVICE_ID);
+			String deviceid = context.getString(JwtInfo.DEVICE_ID);
 
 			if (jwtInfo.getDeviceID().equals(deviceid)) {
-				context.putToGenArgs(UiFrameConstants.PROTOCOL_REQ_PARM_USER, jwtInfo.getUser());
-				context.putToGenArgs(UiFrameConstants.PROTOCOL_REQ_PARM_UDID, jwtInfo.getDeviceID());
-				context.putToGenArgs(UiFrameConstants.PROTOCOL_REQ_JWTINFO, jwtInfo);
+				context.setString(UiFrameConstants.PROTOCOL_REQ_PARM_USER, jwtInfo.getUser());
+				context.setString(UiFrameConstants.PROTOCOL_REQ_PARM_UDID, jwtInfo.getDeviceID());
+				context.setObject(UiFrameConstants.PROTOCOL_REQ_JWTINFO, jwtInfo);
 				String pluginClass =
-						akaFrameProperties.getRequest().getJwtVerify().getVerifyPluginClass();
+						akaFrameProperties.getRequestHander().getJwtVerify().getVerifyPluginClass();
 				if (StringUtils.hasText(pluginClass)) {
 					JwtVerifyPlugin plugin = (JwtVerifyPlugin) Class.forName(pluginClass).newInstance();
 					JwtVerifyPlugin.VerifyResult verifyResult = plugin.verify(jwtInfo);

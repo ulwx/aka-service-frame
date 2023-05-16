@@ -1,7 +1,7 @@
 
 <%@page import="com.github.ulwx.aka.frame.protocol.utils.IError"%>
 <%@page import="com.github.ulwx.aka.frame.utils.JspLog"%>
-<%@page import="com.github.ulwx.aka.frame.utils.UIFrameAppConfig"%>
+<%@page import="com.github.ulwx.aka.frame.UIFrameAppConfig"%>
 <%@page import="java.util.Map"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>

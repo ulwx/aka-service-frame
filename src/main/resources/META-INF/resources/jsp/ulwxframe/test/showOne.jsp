@@ -19,6 +19,7 @@
 <%@ page import="com.ulwx.tool.EscapeUtil" %>
 <%@ page import="com.ulwx.tool.StringUtils" %>
 <%@ page import="com.github.ulwx.aka.frame.doc.ProtocolClassUtils" %>
+<%@ page import="com.github.ulwx.aka.frame.UIFrameAppConfig" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
          pageEncoding="UTF-8" %>
 <!DOCTYPE html>

@@ -5,7 +5,7 @@
 <%@page import="java.util.ArrayList"%>
 <%@page import="com.github.ulwx.aka.frame.protocol.res.JSPFormBean.PostInputParam"%>
 <%@page import="com.github.ulwx.aka.frame.protocol.req.Protocol"%>
-<%@page import="com.github.ulwx.aka.frame.utils.UIFrameAppConfig"%>
+<%@page import="com.github.ulwx.aka.frame.UIFrameAppConfig"%>
 <%@page import="java.util.List"%> 
 <%@page import="com.github.ulwx.aka.frame.protocol.res.JSPFormBean"%>
 <%@page import="com.ulwx.tool.EscapeUtil"%>

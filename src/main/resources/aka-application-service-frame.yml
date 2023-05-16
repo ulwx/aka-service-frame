@@ -13,135 +13,77 @@ aka:
       ##例如 com.swt.v1.parent，則package-nam=com.swt；module-name=parent
       - package-name: com.yscf.trade.web.protocol
         module-name: req
+        # namesapce的值要全局唯一
         namesapce: intf
         #继承om.ulwxframe.protocol.utils.IError的错误码类
         error-class:
+          - a.b.c
+        # type分 request和 notify-request 两种类型。如果指定request，则走request解析过程，如果是notify-request，
+        # 则走notify-request解析过程。
+        handler: request
     #错误参数列表类
     global-error-class:
       - com.ulwxframe.protocol.utils.IError
 
-    request:
-      #请求的参数是否需要根据sign来进行防篡改验证，true：表示进行验证  false：表示不需要验证
-      sign:
-        enable: true
-        exclude-protocol:
-          - Upload
-          - CrossUpload
-          - CrossUploadActivity
-        request-sign-key: "xygedgeerxs@345%4#dee@"
-      jwt-verify:
-        #开启jwt验证
-        enable: true
-        verify-plugin-class: NONE
-        #jwt认证忽略的协议号，如果后面跟一个*，表明是前缀匹配
-        exclude-protocol:
-          - sys.UserLogin
-          - sys.UserLoginOut
-        secret: hong1mu2zhi3ruan4jexge_33@#&@sdffian5
-      debug:
-        enable: true
-        #调试后门值，接口传的参数ndjh和配置的值相同，则忽略防篡改和jwt验证
-        ndjh: 3.141592653@ndjh.cn
-        #ip白名单，只有此ip下才能走后门,可以用ip段里可以用*
-        ip-access-whitelist:
-          - 192.133.34.3
-      processors:
-        - com.ulwxframe.process.DebugProcess
-        - com.ulwxframe.process.GateServerProcessor
-        - com.ulwxframe.process.InitProcessor
-        - com.ulwxframe.process.JwtVerifyProcessor
-        - com.ulwxframe.process.SignVerifyProcessor
-
-    notify-request:
-      ## reqCode请请求参数名称，reqCode参数值的格式为:[ver]@[moduleName]@[parseCode]@[callType]@[serviceName]@[extStr]@[namespace]
-      reqcode-argname: rq
-      parsers:
-     ## 回调时的请求解析插件配置。根据回调请求参数reqCode里的parseCode进行配置解析类，
-     ## reqCode的格式为[ver]@[moduleName]@[parseCode]@[callType]@[serviceName]@[extStr]@[namespace]，
-     ## 如reqCode=v1@trade@jjs@1@CUSTOMER_REGISTER@{a=1,b=2}@intf，则parseCode=jjs,则会调用相应的插件进行解析
-        jjs:
-        df:
-      callback-url: http://localhost:7080/yscf-trade
-
-    storage:
-      ## 接口是否插入接口请求日志 true：插入   false（或空）：不插入
-      insert-interlog:
-        exclude-protocol:
-          - v1.trade.QueryUserInfo
-          - v1.trade.QueryUser
-          - v1.trade.PlatformQueryUserInfo
-      ## 是否插入异步响应日志
-      insert-notifylog:
-        exclude-protocol:
-          - xxx
-          - uuu
-        #接口日志和异步响应日志使用关系型数据库插入
-      databse:
-        enbale: true
-        #接口日志和异步响应日志所在都数据库数据源名称
-        ds: yscf_log
+    handlers:
+      request:
+        #请求的参数是否需要根据sign来进行防篡改验证，true：表示进行验证  false：表示不需要验证
+        sign:
+          enable: true
+          exclude-protocol:
+            - Upload
+            - CrossUpload
+            - CrossUploadActivity
+          request-sign-key: "xygedgeerxs@345%4#dee@"
+        jwt-verify:
+          #开启jwt验证
+          enable: true
+          verify-plugin-class: NONE
+          #jwt认证忽略的协议号，如果后面跟一个*，表明是前缀匹配
+          exclude-protocol:
+            - sys.UserLogin
+            - sys.UserLoginOut
+          secret: hong1mu2zhi3ruan4jexge_33@#&@sdffian5
+        debug:
+          enable: true
+          #调试后门值，接口传的参数ndjh和配置的值相同，则忽略防篡改和jwt验证
+          ndjh: 3.141592653@ndjh.cn
+          #ip白名单，只有此ip下才能走后门,可以用ip段里可以用*
+          ip-access-whitelist:
+            - 192.133.34.3
+        processors:
+          - com.ulwxframe.process.DebugProcess
+          - com.ulwxframe.process.GateServerProcessor
+          - com.ulwxframe.process.InitProcessor
+          - com.ulwxframe.process.JwtVerifyProcessor
+          - com.ulwxframe.process.SignVerifyProcessor
+        storage:
+          ## 接口是否插入接口请求日志 true：插入   false（或空）：不插入
+          log-config:
+            exclude-protocol:
+              - v1.trade.QueryUserInfo
+              - v1.trade.QueryUser
+              - v1.trade.PlatformQueryUserInfo
+            #接口日志和异步响应日志使用关系型数据库插入
+          databse:
+            enbale: true
+            #接口日志和异步响应日志所在都数据库数据源名称
+            ds: yscf_log
+      notify-request:
+        processors:
+          - xxx.yyy.zzz
+        storage:
+          ## 接口是否插入接口请求日志 true：插入   false（或空）：不插入
+          insert-log:
+            exclude-protocol:
+              - aa.bb.cc.dd
+            #接口日志和异步响应日志使用关系型数据库插入
+          databse:
+            enbale: true
+            #接口日志和异步响应日志所在都数据库数据源名称
+            ds: yscf_log
 
 
 
 
-##业务实现的协议请求类所在的包路径,协议请求类会在<指定包>/v<版本号>/<module>子目录下，例如 com.swt.v1.parent, parent为module名
-#  protocol_req_package =com.yscf.trade.web.protocol
-#  #协议请求类前缀，所有请求协议类都必须放入<protocol_req_package>.v<版本号>.<module>.<protocol_req_prefix><请求协议类> 下
-#  protocol_req_prefix=req.
-#  #业务实现的协议响应类所在的包路径，会在"v<版本号>"子目录下的<module>子目录下，例如 com.swt.v1.parent，parent为module名
-#  protocol_res_package =com.yscf.trade.web.protocol
-#  #协议响应类前缀，所有响应协议类都必须放入<protocol_res_package>.v<版本号>.<module>.<protocol_res_prefix><响应协议类> 下
-#  protocol_res_prefix=res.Res
-#
-#  #是否根据sign来进行防篡改验证，1：表示进行验证  0：表示不需要验证
-#  is_validate=1
-#  #不需要验证的类名
-#  #sign_verify_processor_no=Upload,CrossUpload,CrossUploadActivity
-#
-#  #JWT验证扩展
-#  #jwt_verify_plugin_class=""
-#  #是否进行jwt认证
-#  is_jwt_validate=0
-#  #jwt认证忽略的协议号，如果后面跟一个*，表明是前缀匹配，只有在is_jwt_validate=1才有意义
-#  is_jwt_validate_exclude=sys.UserLogin,sys.UserLoginOut
-#  #jwt信息加密时的秘钥
-#  jw_secret=hong1mu2zhi3ruan4jexge_33@#&@sdffian5
-#
-#  #调试后门值，接口传的参数ndjh和配置的值相同，则忽略防篡改和jwt验证
-#  ndjh=3.141592653@ndjh.cn
-#  #ip白名单，只有此ip下才能走后门,可以用ip段里可以用*
-#  ndjh.ip.access.whitelist=
-#
-#  #上传文件的目录
-#  upload_file_dir=/tmp
-#
-#  #错误参数列表类
-#  error_class=com.ulwxframe.protocol.utils.IError
-#
-#  request.sign.key=xygedgeerxs@345%4#dee@
-#
-#  processors=com.ulwxframe.process.DebugProcess,\
-#  com.ulwxframe.process.GateServerProcessor,\
-#  com.ulwxframe.process.InitProcessor,\
-#  com.ulwxframe.process.JwtVerifyProcessor,\
-#  com.ulwxframe.process.SignVerifyProcessor
-#
-#  ## 接口日志和异步响应日志所在都数据库
-#  notify.log.db=yscf_log
-#  ## 接口是否插入接口请求日志 1：插入   0（或空）：不插入
-#  notify.insertInterLog=1
-#  notify.insertInterLog.not.insert=v1.trade.QueryUserInfo,v1.trade.QueryUser,v1.trade.PlatformQueryUserInfo
-#  ## reqCode请请求参数，格式为:<ver>_<moduleName>_<parseCode>_<callType>_<serviceName>_<extStr>_<infKey>
-#  ## 回调类型 ：1-异步回调 2-网关回调 3-本地窗体提交回调
-#  notify.req.code.argname=rq
-#  ###网关请求时，回调时的参数解析插件配置，根据回调请求参数reqCode里的parseCode进行配置解析类
-#  notify.req.parser.yb=
-#  notify.req.parser.df=
-#  ###实现InterLogNotifyDao，InterLogNotifyMoreDao，InterLogReqDao接口的类名，用于回调时插入相关日志
-#  notify.InterLogNotifyDao=
-#  notify.InterLogNotifyMoreDao=
-#  notify.InterLogReqDao=
-#  #异步回调地址
-#  notify.url=http://localhost:7080/yscf-trade
-#  #首页地址
-#  shouye.url=http://dev.jyd100.com:7979/yscf-pc/index.jsp
+
