@@ -3,7 +3,6 @@ package com.github.ulwx.aka.frame.web.action.log.services.dao;
 import com.github.ulwx.aka.dbutils.tool.MD;
 import com.github.ulwx.aka.dbutils.tool.PageBean;
 import com.github.ulwx.aka.frame.UIFrameAppConfig;
-import com.github.ulwx.aka.frame.services.dao.impl.model.InterLogNotifyMore;
 import com.github.ulwx.aka.frame.services.dao.impl.model.InterLogReq;
 import com.github.ulwx.aka.webmvc.AkaDaoSupport;
 
@@ -25,18 +24,6 @@ public class LogDao extends AkaDaoSupport {
 
     }
 
-
-    public  List<InterLogNotifyMore> getLogNotifyMoreList(String query, String condition, String startTime, String endTime,
-                                                                Integer pageNum, Integer perPage, PageBean pb) throws Exception {
-
-        Map<String,Object> map = new HashMap<>();
-        map.put("query",query);
-        map.put("condition",condition);
-        map.put("startTime",startTime);
-        map.put("endTime",endTime);
-        return this.template.queryList(InterLogNotifyMore.class,MD.md(),map,
-                pageNum,perPage,pb,null);
-    }
 
     public  List<InterLogReq> getLogReqList(String sType, String condition, Integer doneStatus, String startTime, String endTime, Integer pageNum, Integer perPage,
                                                   PageBean pb) throws Exception {

@@ -74,7 +74,6 @@ public class InterLogService extends AkaServiceSupport {
 		interLog.setClassReqArgs(reqArgs);
 		interParam.getProtocol().setRequest(ru);
 		interLog.setDoneStatus(UiFrameConstants.HandleStatus.doing);
-		interLog.setKeySerial("");
 		String mdcLogid = MDC.get("logid");
 		if (StringUtils.isEmpty(mdcLogid)) {
 			mdcLogid = "0";
@@ -85,7 +84,6 @@ public class InterLogService extends AkaServiceSupport {
 		}
 		if (interParam.getReqCodePart() != null) {
 			String reqCodeStr = interParam.getReqCode().toReqCodeString();
-			interLog.setReqCode(reqCodeStr);
 		}
 		if (interParam.getExtMap() != null) {
 			interLog.setExtStr(ObjectUtils.toStringUseFastJson((interParam.getExtMap())));
@@ -155,7 +153,7 @@ public class InterLogService extends AkaServiceSupport {
 						  int doneStatus,
 						  String ret,long start) throws Exception {
 		if (ret.length() > 500) {
-			ret = ret.substring(0, 500);
+			ret = ret.substring(0,  500);
 		}
 		InterLogReqBean updateInterLog = new InterLogReqBean();
 		updateInterLog.setId(interLogId);
