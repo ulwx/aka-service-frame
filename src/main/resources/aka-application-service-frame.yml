@@ -2,86 +2,68 @@ aka:
   webvc:
     namespaces: #下面定义命名空间名称
       testapi:
-        package-name: ocom.github.ulwx.aka.frame.web.action
+        package-name: com.github.ulwx.aka.frame.web.action
         url-maps:
           "[*_*_*]":
             allow-methods: post,get
 
-  frame:
-    protocols:
-      ##业务实现的协议请求类所在的包路径,协议请求类会在<package-nam>/v<版本号>/<module-name>子目录下，
-      ##例如 com.swt.v1.parent，則package-nam=com.swt；module-name=parent
-      - package-name: com.yscf.trade.web.protocol
-        module-name: req
-        # namesapce的值要全局唯一
-        namesapce: intf
-        #继承om.ulwxframe.protocol.utils.IError的错误码类
-        error-class:
-          - a.b.c
-        # type分 request和 notify-request 两种类型。如果指定request，则走request解析过程，如果是notify-request，
-        # 则走notify-request解析过程。
-        handler: request
-    #错误参数列表类
-    global-error-class:
-      - com.ulwxframe.protocol.utils.IError
 
-    handlers:
-      request:
-        #请求的参数是否需要根据sign来进行防篡改验证，true：表示进行验证  false：表示不需要验证
-        sign:
-          enable: true
-          exclude-protocol:
-            - Upload
-            - CrossUpload
-            - CrossUploadActivity
-          request-sign-key: "xygedgeerxs@345%4#dee@"
-        jwt-verify:
-          #开启jwt验证
-          enable: true
-          verify-plugin-class: NONE
-          #jwt认证忽略的协议号，如果后面跟一个*，表明是前缀匹配
-          exclude-protocol:
-            - sys.UserLogin
-            - sys.UserLoginOut
-          secret: hong1mu2zhi3ruan4jexge_33@#&@sdffian5
-        debug:
-          enable: true
-          #调试后门值，接口传的参数ndjh和配置的值相同，则忽略防篡改和jwt验证
-          ndjh: 3.141592653@ndjh.cn
-          #ip白名单，只有此ip下才能走后门,可以用ip段里可以用*
-          ip-access-whitelist:
-            - 192.133.34.3
-        processors:
-          - com.ulwxframe.process.DebugProcess
-          - com.ulwxframe.process.GateServerProcessor
-          - com.ulwxframe.process.InitProcessor
-          - com.ulwxframe.process.JwtVerifyProcessor
-          - com.ulwxframe.process.SignVerifyProcessor
-        storage:
-          ## 接口是否插入接口请求日志 true：插入   false（或空）：不插入
-          log-config:
-            exclude-protocol:
-              - v1.trade.QueryUserInfo
-              - v1.trade.QueryUser
-              - v1.trade.PlatformQueryUserInfo
-            #接口日志和异步响应日志使用关系型数据库插入
-          databse:
-            enbale: true
-            #接口日志和异步响应日志所在都数据库数据源名称
-            ds: yscf_log
-      notify-request:
-        processors:
-          - xxx.yyy.zzz
-        storage:
-          ## 接口是否插入接口请求日志 true：插入   false（或空）：不插入
-          insert-log:
-            exclude-protocol:
-              - aa.bb.cc.dd
-            #接口日志和异步响应日志使用关系型数据库插入
-          databse:
-            enbale: true
-            #接口日志和异步响应日志所在都数据库数据源名称
-            ds: yscf_log
+#  frame:
+#    protocols:
+#      ##业务实现的协议请求类所在的包路径,协议请求类会在<package-nam>/v<版本号>/<module-name>子目录下，
+#      ##例如 com.swt.v1.parent，則package-nam=com.swt；module-name=parent
+#      protocols:
+#         - namesapce: testapi
+#           handler: request-handler
+#           protocol-builder-class: xxx.yyy.zzz
+#    handlers:
+#      request-handler:
+#        #请求的参数是否需要根据sign来进行防篡改验证，true：表示进行验证  false：表示不需要验证
+#        sign-verify:
+#          enable: true
+#          exclude-protocol:
+#            - Upload
+#            - CrossUpload
+#            - CrossUploadActivity
+#          request-sign-key: "xygedgeerxs@345%4#dee@"
+#        jwt-verify:
+#          #承载JWT Token的参数名称固定为Authorization。
+#          #承载JWT Token的介质，分header、query、cookie
+#          param-in: header|query|cookie
+#          #开启jwt验证，
+#          enable: true
+#          verify-plugin-class: NONE
+#          #jwt认证忽略的协议号，如果后面跟一个*，表明是前缀匹配
+#          exclude-protocol:
+#            - sys.UserLogin
+#            - sys.UserLoginOut
+#          secret: hong1mu2zhi3ruan4jexge_33@#&@sdffian5
+#        debug:
+#          enable: true
+#          #调试后门值，接口传的参数ndjh和配置的值相同，则忽略防篡改和jwt验证
+#          ndjh: 3.141592653@ndjh.cn
+#          #ip白名单，只有此ip下才能走后门,可以用ip段里可以用*
+#          ip-access-whitelist:
+#            - 192.133.34.3
+##        processors:
+##          - com.ulwxframe.process.DebugProcess
+##          - com.ulwxframe.process.GateServerProcessor
+##          - com.ulwxframe.process.JwtVerifyProcessor
+##          - com.ulwxframe.process.SignVerifyProcessor
+#
+#        storage:
+#          ## 接口是否插入接口请求日志 true：插入   false（或空）：不插入
+#          log-config:
+#            exclude-protocol:
+#              - v1.trade.QueryUserInfo
+#              - v1.trade.QueryUser
+#              - v1.trade.PlatformQueryUserInfo
+#            #接口日志和异步响应日志使用关系型数据库插入
+#          databse:
+#            enbale: true
+#            #接口日志和异步响应日志所在都数据库数据源名称
+#            ds: yscf_log
+
 
 
 

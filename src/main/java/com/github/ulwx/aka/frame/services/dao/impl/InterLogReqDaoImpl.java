@@ -8,8 +8,6 @@ import com.github.ulwx.aka.frame.services.dao.impl.model.InterLogReq;
 import com.github.ulwx.aka.frame.services.domain.InterLogReqBean;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
 
 public class InterLogReqDaoImpl extends InterLogReqDao {
 	@Override
@@ -25,11 +23,7 @@ public class InterLogReqDaoImpl extends InterLogReqDao {
 
 	}
 	public  InterLogReqBean getInterLogReq(String reqNo,String servieName) throws Exception{
-		Map<String,Object> args=new HashMap<>();
-		args.put("reqNo", reqNo);
-		args.put("servieName", servieName);
-
-		return this.template.queryOne(InterLogReqBean.class, MD.md(),args);
+		throw new UnsupportedOperationException();
 
 	}
 	

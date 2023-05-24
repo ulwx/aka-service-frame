@@ -15,8 +15,7 @@ public class AkaFrameProperties implements InitializingBean {
     public final static String  FRAME_PROPERTIES_PREFX="aka.frame";
     @NestedConfigurationProperty
     private List<ProtocolProperties> protocols=new ArrayList<>();
-    private String globalErrorClass="";
-    private Map<String, RequestHandler> handlers=new HashMap<>();
+    private Map<String, Handler> handlers=new HashMap<>();
     public List<ProtocolProperties> getProtocols() {
         return protocols;
     }
@@ -25,20 +24,11 @@ public class AkaFrameProperties implements InitializingBean {
         this.protocols = protocols;
     }
 
-    public String getGlobalErrorClass() {
-        return globalErrorClass;
-    }
-
-    public void setGlobalErrorClass(String globalErrorClass) {
-        this.globalErrorClass = globalErrorClass;
-    }
-
-
-    public Map<String, RequestHandler> getHandlers() {
+    public Map<String, Handler> getHandlers() {
         return handlers;
     }
 
-    public void setHandlers(Map<String, RequestHandler> handlers) {
+    public void setHandlers(Map<String, Handler> handlers) {
         this.handlers = handlers;
     }
 
@@ -93,16 +83,20 @@ public class AkaFrameProperties implements InitializingBean {
         }
     }
 
-    public static class RequestHandler {
-        private  Sign sign=new Sign();
+    public static class Handler {
+        private SignVerify signVerify=new SignVerify();
         private JwtVerify jwtVerify=new JwtVerify();
         private Debug debug=null;
         private List<String> processors=new ArrayList<>();
         @NestedConfigurationProperty
         private Storage storage=new Storage();
 
-        public Sign getSign() {
-            return sign;
+        public SignVerify getSignVerify() {
+            return signVerify;
+        }
+
+        public void setSignVerify(SignVerify signVerify) {
+            this.signVerify = signVerify;
         }
 
         public Storage getStorage() {
@@ -113,9 +107,6 @@ public class AkaFrameProperties implements InitializingBean {
             this.storage = storage;
         }
 
-        public void setSign(Sign sign) {
-            this.sign = sign;
-        }
 
         public JwtVerify getJwtVerify() {
             return jwtVerify;
@@ -211,7 +202,7 @@ public class AkaFrameProperties implements InitializingBean {
         }
     }
 
-    public static class Sign{
+    public static class SignVerify {
         private Boolean enable=false;
         private List<String> excludeProtocol=new ArrayList<>();
         private String requestSignKey="";
@@ -241,10 +232,17 @@ public class AkaFrameProperties implements InitializingBean {
         }
     }
     public static class ProtocolProperties {
-        private String  packageName="";
         private String namesapce="";
-        private String errorClass="";
         private  String handler="";
+        private String protocolBuilderClass="";
+
+        public String getProtocolBuilderClass() {
+            return protocolBuilderClass;
+        }
+
+        public void setProtocolBuilderClass(String protocolBuilderClass) {
+            this.protocolBuilderClass = protocolBuilderClass;
+        }
 
         public String getNamesapce() {
             return namesapce;
@@ -254,21 +252,7 @@ public class AkaFrameProperties implements InitializingBean {
             this.namesapce = namesapce;
         }
 
-        public String getPackageName() {
-            return packageName;
-        }
 
-        public void setPackageName(String packageName) {
-            this.packageName = packageName;
-        }
-
-        public String getErrorClass() {
-            return errorClass;
-        }
-
-        public void setErrorClass(String errorClass) {
-            this.errorClass = errorClass;
-        }
 
         public String getHandler() {
             return handler;

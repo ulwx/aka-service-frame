@@ -14,9 +14,9 @@ import java.util.Date;
 public class JwtHelper {
 		private static Logger log =LoggerFactory.getLogger(JwtHelper.class);
 
-	    
 
-	    public static String createJWT(JwtInfo jwtInfo,String jwtKey) throws Exception {
+	    public static String createJWT(JwtInfo jwtInfo,String jwtKey
+				,int expireSeconds)  {
 
 	        /***
 	        iss: jwt签发者
@@ -29,7 +29,7 @@ public class JwtHelper {
 	        **/
 	        Date now = new Date();
 	        Date notBefore=CTime.addMinutes(-2);
-	        Date expirationDate=CTime.addMinutes(60*24*180);//半年后过期
+	        Date expirationDate=CTime.addSenconds(expireSeconds);
 		    Algorithm algorithm = Algorithm.HMAC256(jwtKey);
 		    
 		    String token = JWT.create()

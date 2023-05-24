@@ -12,7 +12,7 @@ public class InterLogReqBean implements java.io.Serializable {
 
 	private Long id;/*流水号;len:20*/
 	private String requestNo;/*业务请求订单号，协议对象里的业务请求订单号;len:30*/
-	private String type;/*分：网关接口，直连接口，对账下载;len:20*/
+	private String type;/*接口类型;len:20*/
 	private String className;/*处理类;len:50*/
 	private String responseType;/*回调类型：回调类型：异步回调 , 网关回调;len:20*/
 	private String serviceName;/*接口名称;len:50*/
@@ -26,7 +26,7 @@ public class InterLogReqBean implements java.io.Serializable {
 	private String returnStr;/*响应字符串;len:500*/
 	private String extStr;/*扩展字符串;len:250*/
 	private Integer doneStatus;/*响应的处理状态;len:10*/
-	private String code;/*响应里的code;len:10*/
+	private String code;/*响应里的状态码;根据业务定义。len:10*/
 	private String status;/*响应里的状态;len:20*/
 	private Long logid;/*日志id;len:19*/
 	private LocalDateTime addTime;/*添加时间;len:19*/

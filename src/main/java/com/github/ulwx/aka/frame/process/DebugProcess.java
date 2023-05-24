@@ -1,21 +1,25 @@
 package com.github.ulwx.aka.frame.process;
 
-import java.util.Enumeration;
+import com.github.ulwx.aka.webmvc.ActionMethodInfo;
+import com.github.ulwx.aka.webmvc.web.action.ActionSupport;
+import com.ulwx.tool.ArrayUtils;
+import com.ulwx.tool.RequestUtils;
+import com.ulwx.tool.StringUtils;
+import org.apache.log4j.Logger;
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Enumeration;
 
-import org.apache.log4j.Logger;
-
-import com.ulwx.tool.ArrayUtils;
-import com.ulwx.tool.StringUtils;
-import com.github.ulwx.aka.frame.protocol.res.BaseRes;
-
-
-public class DebugProcess extends Processor {
+@Component
+@Order(1)
+public class DebugProcess extends ActionSupport implements FrameProcess{
 	private static Logger log = Logger.getLogger(DebugProcess.class);
 
 	@Override
-	public BaseRes process(HttpServletRequest request,ProcessContext context) throws Exception {
+	public String process(HttpServletRequest request,
+						  ActionMethodInfo actionMethodInfo, RequestUtils context) {
 
 		String queryStr=request.getQueryString();
 		if (log.isInfoEnabled()) {

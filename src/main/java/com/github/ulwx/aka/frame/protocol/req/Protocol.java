@@ -1,122 +1,101 @@
 package com.github.ulwx.aka.frame.protocol.req;
 
-import com.github.ulwx.aka.frame.AkaFrameProperties;
-import com.github.ulwx.aka.frame.annotation.Comment;
-import com.github.ulwx.aka.frame.annotation.InterfaceTest;
-import com.github.ulwx.aka.frame.annotation.Validate;
-import com.github.ulwx.aka.frame.protocol.utils.ReqContext;
-import com.github.ulwx.aka.frame.UIFrameAppConfig;
-import com.github.ulwx.aka.webmvc.BeanGet;
-import com.github.ulwx.aka.webmvc.exception.ServiceException;
-import com.ulwx.tool.RequestUtils;
-import com.ulwx.tool.StringUtils;
+import com.github.ulwx.aka.frame.protocol.CallBackType;
+import com.github.ulwx.aka.frame.protocol.InterType;
 import org.apache.log4j.Logger;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 
-public abstract class Protocol extends Base{
+public  class Protocol {
 
 	protected  Logger logger = Logger.getLogger(this.getClass());
-	
-	@InterfaceTest(value = "",display =true)
-	@Comment(cn = "请求流水号")
-	@Validate
-	public String requestid;
-	
-	@InterfaceTest(value = "0",display =true)
-	@Comment(cn = "用户id，有些接口不存在用户id，比如登录接口")
-	public String userid;
-	
-	@InterfaceTest(value = "",display =true)
-	@Comment(cn = "设备Id，根据场景不同含义不同，有可能是赋值为用户id")
-	public String udid;
-	
-	@Comment(cn = "来源标识, 格式为： <产品标识_版本号>-<渠道标识>-<用户操作系统标识_版本号>-<设备序列号或设备id>-<设备型号>-<扩展信息>")
-	@InterfaceTest(value = "pc_1.0-no-no-no-no-no",display =true)
-	public String sourceId;
-	
-	@Comment(cn = "是否时测试，0：正式 1：测试")
-	@InterfaceTest(value = "0",display =true)
-	public Integer test=0;
+	//订单号
+	private String requestid;
+	//服务名称，由业务来确定
+	private String serviceName;
+	//平台id,由业务来定
+	private String platformNo;
+	//平台用户id，由业务来定
+	private String platformUserNo;
+	//本地用户id
+	private String userid;
+	private String udid;
+	private String sourceId;
+	private String protocolName;// 10001
+	private String ver; //协议版本号 1.0.0
+	private Long timestamp;
+	//关联单号
+	private String refRequestid;
+	private String remoteIp;
+	private String moduleName;//moduleName
+	private String namespace;
+	private InterType interType;
+	private CallBackType callBackType;
 
-	@Validate
-	@InterfaceTest(display = false)
-	@Comment(cn = "协议号")
-	public String protocol;// 10001
-	@Validate
-	@InterfaceTest(value = "1.0.0",display = false)
-	@Comment(cn = "协议版本号")
-	public String ver; //协议版本号 1.0.0
-	
-	@Comment(cn = "远程IP")
-	@InterfaceTest(value = "0.0.0.0",display =false)
-	public String remoteIp;
-	
-	@InterfaceTest(display = false)
-	@Comment(cn = "模块名")
-	public String moduleName;//moduleName
-	
-	@InterfaceTest(display = false)
-	@Comment(cn = "请求命名空间")
-	public String namespace;
-	
-	@InterfaceTest(display = true)
-	@Comment(cn = "签名")
-	public String sign;
-
-	@Validate
-	@InterfaceTest(value = "",display =true)
-	@Comment(cn = "时间戳")
-	public Long timestamp;
-	
-
-	public static class Status{
-
-		public static final Integer FAIL = 0;//失败
-
-		public static final Integer SUCCESS = 1;// 成功
-	}
-	
-	
-	public String getSign() {
-		return sign;
+	public String getPlatformUserNo() {
+		return platformUserNo;
 	}
 
-	public String getVer() {
-		return ver;
+	public void setPlatformUserNo(String platformUserNo) {
+		this.platformUserNo = platformUserNo;
 	}
 
-	public String getProtocol() {
-		return protocol;
+	/**
+	 * 请求时的扩展
+	 */
+	private  Map<String,Object> extMap;
+
+	private Map<String, String[]> requestMap;
+	private String requestBody;
+
+
+	public Map<String, String[]> getRequestMap() {
+		return requestMap;
 	}
 
-	public String getUserid() {
-		return userid;
+	public void setRequestMap(Map<String, String[]> requestMap) {
+		this.requestMap = requestMap;
 	}
 
-	public String getUdid() {
-		return udid;
+	public String getRequestBody() {
+		return requestBody;
 	}
 
-	public String getRemoteIp() {
-		return remoteIp;
+	public void setRequestBody(String requestBody) {
+		this.requestBody = requestBody;
 	}
 
-	public String getSourceId() {
-		return sourceId;
+	public CallBackType getCallBackType() {
+		return callBackType;
 	}
 
-	public String getModuleName() {
-		return moduleName;
+	public void setCallBackType(CallBackType callBackType) {
+		this.callBackType = callBackType;
 	}
 
-	public String getNamespace() {
-		return namespace;
+	public InterType getInterType() {
+		return interType;
 	}
 
-	public void setNamespace(String namespace) {
-		this.namespace = namespace;
+	public void setInterType(InterType interType) {
+		this.interType = interType;
+	}
+
+	public Logger getLogger() {
+		return logger;
+	}
+
+	public void setLogger(Logger logger) {
+		this.logger = logger;
+	}
+
+	public String getServiceName() {
+		return serviceName;
+	}
+
+	public void setServiceName(String serviceName) {
+		this.serviceName = serviceName;
 	}
 
 	public String getRequestid() {
@@ -127,71 +106,99 @@ public abstract class Protocol extends Base{
 		this.requestid = requestid;
 	}
 
-	/**
-	 * 业务逻辑处理
-	 * 
-	 * @return 如果返回为null，表示验证通过；如果为非null，表明验证不通过
-	 * @throws Exception
-	 */
-	public abstract String validate() throws Exception;
-	
-
-	public <T extends Protocol> T cloneBaseTo(T dest) { 
-		dest.namespace=this.namespace;
-		dest.moduleName=this.moduleName;
-		dest.protocol=dest.getClass().getSimpleName();
-		dest.remoteIp=this.getRemoteIp();
-		dest.requestid="";
-		dest.ver=this.ver;
-		dest.udid=this.udid;
-		dest.sourceId=this.sourceId;
-		dest.timestamp=this.timestamp;
-		dest.userid=this.userid;
-		return dest;
+	public String getPlatformNo() {
+		return platformNo;
 	}
-	public <T extends Protocol> T cloneBaseFrom(Protocol from) {
-		this.namespace=from.namespace;
-		this.moduleName=from.moduleName;
-		this.protocol=this.getClass().getSimpleName();
-		this.remoteIp=from.getRemoteIp();
-		this.requestid="";
-		this.ver=from.ver;
-		this.udid=from.udid;
-		this.sourceId=from.sourceId;
-		this.timestamp=from.timestamp;
-		this.userid=from.userid;
-		return (T)this;
-	}
-	
-	public <T extends Protocol> T cloneBase() {
-		Protocol p=(Protocol)ReqContext.getRequestBean();
-		if(p!=null) {
-			return this.cloneBaseFrom(p);
-		}else {
-			RequestUtils requestUtils=ReqContext.getRequestUtis();
-			HttpServletRequest httpServletRequest=ReqContext.getHttpServletRequest();
-			UIFrameAppConfig uiFrameAppConfig=BeanGet.getBean(UIFrameAppConfig.class);
-			AkaFrameProperties.ProtocolProperties protocolInfo = uiFrameAppConfig.getProtocolInfo(this.getClass());
-			String clssName = this.getClass().getName();
-			if(protocolInfo!=null) {
-				String suf = StringUtils.trimLeadingString(clssName, protocolInfo.getPackageName());
-				String strs[] = suf.split("\\.");
-				String ver = strs[1];
-				String modName = strs[2];
-				this.namespace = protocolInfo.getNamesapce();
-				this.moduleName = modName;
-				this.protocol = this.getClass().getSimpleName();
-				this.remoteIp = "";
-				this.requestid = "";
-				this.ver = ver;
-				this.udid = "";
-				this.sourceId = "";
-				this.timestamp = null;
-				this.userid = "";
-				return (T) this;
-			}
-			throw new ServiceException("无法找到协议的配置信息!");
 
-		}
+	public void setPlatformNo(String platformNo) {
+		this.platformNo = platformNo;
+	}
+
+	public String getUserid() {
+		return userid;
+	}
+
+	public void setUserid(String userid) {
+		this.userid = userid;
+	}
+
+	public String getUdid() {
+		return udid;
+	}
+
+	public void setUdid(String udid) {
+		this.udid = udid;
+	}
+
+	public String getSourceId() {
+		return sourceId;
+	}
+
+	public void setSourceId(String sourceId) {
+		this.sourceId = sourceId;
+	}
+
+	public String getProtocolName() {
+		return protocolName;
+	}
+
+	public void setProtocolName(String protocolName) {
+		this.protocolName = protocolName;
+	}
+
+	public String getVer() {
+		return ver;
+	}
+
+	public void setVer(String ver) {
+		this.ver = ver;
+	}
+
+	public Long getTimestamp() {
+		return timestamp;
+	}
+
+	public void setTimestamp(Long timestamp) {
+		this.timestamp = timestamp;
+	}
+
+	public String getRefRequestid() {
+		return refRequestid;
+	}
+
+	public void setRefRequestid(String refRequestid) {
+		this.refRequestid = refRequestid;
+	}
+
+	public String getRemoteIp() {
+		return remoteIp;
+	}
+
+	public void setRemoteIp(String remoteIp) {
+		this.remoteIp = remoteIp;
+	}
+
+	public String getModuleName() {
+		return moduleName;
+	}
+
+	public void setModuleName(String moduleName) {
+		this.moduleName = moduleName;
+	}
+
+	public String getNamespace() {
+		return namespace;
+	}
+
+	public void setNamespace(String namespace) {
+		this.namespace = namespace;
+	}
+
+	public Map<String, Object> getExtMap() {
+		return extMap;
+	}
+
+	public void setExtMap(Map<String, Object> extMap) {
+		this.extMap = extMap;
 	}
 }

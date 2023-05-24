@@ -36,10 +36,10 @@ public class LogAction extends ActionSupport {
             list = beanGet.bean(LogService.class).getLogReqList(sType,condition,doneStatus,startTime,endTime,pageNum,perPage,pb);
             model.setTotal(pb.getTotal());
             model.setRows(list);
-            return this.JSON_SUC(model);
+            return this.JsonViewSuc(model);
         }catch(Exception e){
             logger.error("",e);
         }
-        return this.JSON_ERR("获取失败");
+        return this.JsonViewError("获取失败");
     }
 }

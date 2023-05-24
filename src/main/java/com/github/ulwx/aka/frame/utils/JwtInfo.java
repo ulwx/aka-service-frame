@@ -14,8 +14,7 @@ public class JwtInfo {
 	private String userType;
 	private String ext;
 	private String deviceID;
-	
-	
+
 	public String getExt() {
 		return ext;
 	}
