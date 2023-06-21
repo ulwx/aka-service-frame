@@ -1,3 +1,7 @@
+spring:
+  devtools:
+    restart:
+      enabled: true
 aka:
   webvc:
     namespaces: #下面定义命名空间名称
@@ -6,38 +10,36 @@ aka:
         url-maps:
           "[*_*_*]":
             allow-methods: post,get
-
-
 #  frame:
 #    protocols:
-#      ##业务实现的协议请求类所在的包路径,协议请求类会在<package-nam>/v<版本号>/<module-name>子目录下，
-#      ##例如 com.swt.v1.parent，則package-nam=com.swt；module-name=parent
-#      protocols:
-#         - namesapce: testapi
-#           handler: request-handler
-#           protocol-builder-class: xxx.yyy.zzz
+#      ## namesapce对应aka.webvc.namespaces.prococoltest
+#      - namesapce: prococoltest
+#        handler: request-handler
+#        #只有在aka.frame.handlers.request-handler.storage.databse.enbale=true才起作用。
+#        #用于构造com.github.ulwx.aka.frame.protocol.req.Protocol对象，此对象会被存储。
+#        protocol-builder-class: com.yscf.trade.web.MyProtocolBuilder
 #    handlers:
 #      request-handler:
 #        #请求的参数是否需要根据sign来进行防篡改验证，true：表示进行验证  false：表示不需要验证
 #        sign-verify:
-#          enable: true
+#          enable: false
 #          exclude-protocol:
-#            - Upload
-#            - CrossUpload
-#            - CrossUploadActivity
+#            - usermod-User-getUserList
 #          request-sign-key: "xygedgeerxs@345%4#dee@"
 #        jwt-verify:
-#          #承载JWT Token的参数名称固定为Authorization。
-#          #承载JWT Token的介质，分header、query、cookie
-#          param-in: header|query|cookie
-#          #开启jwt验证，
+#          #开启jwt验证
 #          enable: true
 #          verify-plugin-class: NONE
 #          #jwt认证忽略的协议号，如果后面跟一个*，表明是前缀匹配
 #          exclude-protocol:
-#            - sys.UserLogin
-#            - sys.UserLoginOut
+#            - usermod-User-login
+#            - usermod-User-gatewayLogin
+#            - usermod-User-gatewayLogout
 #          secret: hong1mu2zhi3ruan4jexge_33@#&@sdffian5
+          #携带token的媒介，分header，query，cookie ，可以设置多个，以英文逗号隔开
+#          param-in: header
+#          #携带token的参数名称，如果是param-in=header，则参数名称即为header的名称。
+#          param-name: access_token
 #        debug:
 #          enable: true
 #          #调试后门值，接口传的参数ndjh和配置的值相同，则忽略防篡改和jwt验证
@@ -45,24 +47,21 @@ aka:
 #          #ip白名单，只有此ip下才能走后门,可以用ip段里可以用*
 #          ip-access-whitelist:
 #            - 192.133.34.3
-##        processors:
-##          - com.ulwxframe.process.DebugProcess
-##          - com.ulwxframe.process.GateServerProcessor
-##          - com.ulwxframe.process.JwtVerifyProcessor
-##          - com.ulwxframe.process.SignVerifyProcessor
-#
+#        processors:
+#             - com.ulwxframe.process.DebugProcess
+#             - com.ulwxframe.process.GateServerProcessor
+#             - com.ulwxframe.process.JwtVerifyProcessor
+#             - com.ulwxframe.process.SignVerifyProcessor
 #        storage:
 #          ## 接口是否插入接口请求日志 true：插入   false（或空）：不插入
 #          log-config:
+#            ## 数组类型
 #            exclude-protocol:
-#              - v1.trade.QueryUserInfo
-#              - v1.trade.QueryUser
-#              - v1.trade.PlatformQueryUserInfo
 #            #接口日志和异步响应日志使用关系型数据库插入
 #          databse:
 #            enbale: true
 #            #接口日志和异步响应日志所在都数据库数据源名称
-#            ds: yscf_log
+#            ds: common-frame
 
 
 

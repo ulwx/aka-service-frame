@@ -10,9 +10,10 @@ import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
-@Component
+@Component("com.github.ulwx.aka.frame.UIFrameAppConfig")
 public class UIFrameAppConfig implements InitializingBean  {
 	private AkaFrameProperties akaFrameProperties;
 	private BeanGet beanGet;
@@ -50,6 +51,9 @@ public class UIFrameAppConfig implements InitializingBean  {
 
 	private static Logger log = Logger.getLogger(UIFrameAppConfig.class);
 
+	public Set<String> getAllNameSpaces(){
+		return namespaceToProtocolProperties.keySet();
+	}
 	public AkaFrameProperties.ProtocolProperties getProtocolInfo(String namespace){
 		return namespaceToProtocolProperties.get(namespace);
 	}
@@ -58,16 +62,16 @@ public class UIFrameAppConfig implements InitializingBean  {
 		return this.requestHandlerMap.get(getProtocolInfo(namespace).getHandler());
 	}
 
-	public String getNameSpace(){
+	public String getCurNameSpace(){
 		ActionMethodInfo actionMethodInfo= WebMvcActiionContextConst.getActionMethodInfo();
 		return actionMethodInfo.getNamespace().getName();
 	}
 
-	public AkaFrameProperties.Storage getStorage(){
-		return getRequestHander(getNameSpace()).getStorage();
+	public AkaFrameProperties.Storage getCurStorage(){
+		return getRequestHander(getCurNameSpace()).getStorage();
 	}
-	public AkaFrameProperties.Handler getRequestHander(){
-		return this.requestHandlerMap.get(getProtocolInfo(this.getNameSpace()).getHandler());
+	public AkaFrameProperties.Handler getCurRequestHander(){
+		return this.requestHandlerMap.get(getProtocolInfo(this.getCurNameSpace()).getHandler());
 	}
 
 	public static void main(String[] args) throws Exception {

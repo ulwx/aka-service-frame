@@ -33,6 +33,11 @@ public  class Protocol {
 	private InterType interType;
 	private CallBackType callBackType;
 
+	//请求时的扩展
+	private  Map<String,Object> extMap;
+	private Map<String, String[]> requestMap;
+	private String requestBody;
+
 	public String getPlatformUserNo() {
 		return platformUserNo;
 	}
@@ -40,14 +45,6 @@ public  class Protocol {
 	public void setPlatformUserNo(String platformUserNo) {
 		this.platformUserNo = platformUserNo;
 	}
-
-	/**
-	 * 请求时的扩展
-	 */
-	private  Map<String,Object> extMap;
-
-	private Map<String, String[]> requestMap;
-	private String requestBody;
 
 
 	public Map<String, String[]> getRequestMap() {

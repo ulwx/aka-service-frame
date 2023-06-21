@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Enumeration;
 
-@Component
+@Component("com.github.ulwx.aka.frame.process.DebugProcess")
 @Order(1)
 public class DebugProcess extends ActionSupport implements FrameProcess{
 	private static Logger log = Logger.getLogger(DebugProcess.class);

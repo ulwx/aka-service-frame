@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
-@Component
+@Component("com.github.ulwx.aka.frame.process.AlkaFrameRequestProcessor")
 @Order(1)
 public class AlkaFrameRequestProcessor implements RequestProcessor {
     private List<FrameProcess> frameProcesses=new ArrayList<>();
@@ -26,9 +26,8 @@ public class AlkaFrameRequestProcessor implements RequestProcessor {
 
     @Override
     public String onBefore(HttpServletRequest request,
-                           ActionMethodInfo actionMethodInfo, RequestUtils context) {
+                                 ActionMethodInfo actionMethodInfo, RequestUtils context) {
         try {
-
             UIFrameAppConfig akaFrameProperties =beanGet.bean(UIFrameAppConfig.class);
             List<FrameProcess> finalProcessors =new ArrayList<>();
             finalProcessors.addAll(this.frameProcesses);
@@ -57,5 +56,6 @@ public class AlkaFrameRequestProcessor implements RequestProcessor {
             throw new RuntimeException(e);
         }
     }
+
 
 }

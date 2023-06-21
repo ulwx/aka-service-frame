@@ -14,8 +14,8 @@ public class InterLogReqDaoImpl extends InterLogReqDao {
 	public  String getDS(){
 		UIFrameAppConfig akaFrameProperties=this.beanGet.bean(UIFrameAppConfig.class);
 		String poolName="";
-		if(akaFrameProperties.getStorage().getDatabse().getDs()!=null){
-			poolName=akaFrameProperties.getStorage().getDatabse().getDs();
+		if(akaFrameProperties.getCurStorage().getDatabse().getDs()!=null){
+			poolName=akaFrameProperties.getCurStorage().getDatabse().getDs();
 			return poolName;
 		}else{
 			throw new RuntimeException("没有指定数据源名称！");

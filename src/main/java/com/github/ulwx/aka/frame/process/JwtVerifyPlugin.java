@@ -1,10 +1,10 @@
 package com.github.ulwx.aka.frame.process;
 
-import com.github.ulwx.aka.frame.utils.JwtInfo;
+import com.github.ulwx.aka.frame.utils.TokenInfo;
 
 public interface JwtVerifyPlugin {
 
-	public VerifyResult verify(JwtInfo jwtInfo)throws Exception;
+	public VerifyResult verify(TokenInfo jwtInfo)throws Exception;
 
 	public static class VerifyResult{
 		private boolean success=true;

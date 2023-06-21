@@ -1,13 +1,16 @@
 package com.github.ulwx.aka.frame.process;
 
+import com.github.ulwx.aka.frame.AkaFrameProperties;
 import com.github.ulwx.aka.frame.UIFrameAppConfig;
 import com.github.ulwx.aka.frame.UiFrameConstants;
 import com.github.ulwx.aka.frame.protocol.utils.IError;
 import com.github.ulwx.aka.frame.utils.JwtHelper;
-import com.github.ulwx.aka.frame.utils.JwtInfo;
+import com.github.ulwx.aka.frame.utils.TokenInfo;
 import com.github.ulwx.aka.webmvc.ActionMethodInfo;
 import com.github.ulwx.aka.webmvc.BeanGet;
 import com.github.ulwx.aka.webmvc.web.action.ActionSupport;
+import com.ulwx.tool.ArrayUtils;
+import com.ulwx.tool.CTime;
 import com.ulwx.tool.RequestUtils;
 import com.ulwx.tool.StringUtils;
 import org.apache.log4j.Logger;
@@ -18,6 +21,7 @@ import org.springframework.util.AntPathMatcher;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -26,7 +30,7 @@ import java.util.List;
  * @author yong
  *
  */
-@Component
+@Component("com.github.ulwx.aka.frame.process.JwtVerifyProcessor")
 @Order(3)
 public class JwtVerifyProcessor extends ActionSupport implements FrameProcess{
 	private static Logger log = Logger.getLogger(JwtVerifyProcessor.class);
@@ -35,13 +39,12 @@ public class JwtVerifyProcessor extends ActionSupport implements FrameProcess{
 	public String process(HttpServletRequest request, ActionMethodInfo actionMethodInfo, RequestUtils context) {
 		boolean jsonResponse=actionMethodInfo.getJSONResponse();
 		String reponseContentType=actionMethodInfo.getAnnoClassMethodInfo().getResponseContentType();
-		//if(actionMethodInfo.getAnnoClassMethodInfo().getResponseContentType().contains("json"))
 		String namespace = actionMethodInfo.getNamespace().getName();
 		Object javaBean = null;
 		UIFrameAppConfig uIFrameAppConfig= BeanGet.getBean(UIFrameAppConfig.class,request);
 		HttpSession session = request.getSession();
-
-		Boolean isJwtValidate = uIFrameAppConfig.getRequestHander(namespace).getJwtVerify().getEnable();
+		AkaFrameProperties.JwtVerify jwtVerify=uIFrameAppConfig.getRequestHander(namespace).getJwtVerify();
+		Boolean isJwtValidate = jwtVerify.getEnable();
 		if(isJwtValidate!=null && !isJwtValidate) {
 			return null;
 		}
@@ -70,7 +73,7 @@ public class JwtVerifyProcessor extends ActionSupport implements FrameProcess{
 
 		try {
 			log.debug("jwt验证");
-			List<String> excludes=uIFrameAppConfig.getRequestHander(namespace).getJwtVerify().getExcludeProtocol();
+			List<String> excludes=jwtVerify.getExcludeProtocol();
 			String protocol =  actionMethodInfo.getActionLogicName(); // context.getStringInReqArgs("protocol");
 			String compareStr = actionMethodInfo.getLogicActionMethodName();
 			if (StringUtils.hasText(protocol)) {
@@ -85,69 +88,99 @@ public class JwtVerifyProcessor extends ActionSupport implements FrameProcess{
 
 			} else {
 				if(jsonResponse){
-					return  this.JsonViewError("参数有错误！[协议号为空]");
+					return  JsonViewError("参数有错误！[协议号为空]");
 				}else{
 					return this.errorView(0,"参数有错误！[协议号为空]","");
 				}
 			}
-
-			String authHeader = request.getHeader("Authorization");
-			if (StringUtils.isEmpty(authHeader)) {
-				authHeader = context.getString("Authorization");
+			//request的header里是否有Authorization
+			String paramIn=StringUtils.trim(jwtVerify.getParamIn());
+			String paraName=StringUtils.trim(jwtVerify.getParamName());
+			boolean inHeader=false;
+			boolean inQuery=false;
+			boolean inCookie=false;
+			if(!paramIn.isEmpty()){
+				String[] strs= ArrayUtils.trim(paramIn.split(","));
+				for(int i=0; i<strs.length; i++){
+					//header、query、cookie
+					if(strs[i].equals("header")) inHeader=true;
+					if(strs[i].equals("query")) inQuery=true;
+					if(strs[i].equals("cookie")) inCookie=true;
+				}
+			}else{
+				inHeader=true;
+				inQuery=true;
+				inCookie=true;
 			}
-			if (StringUtils.isEmpty(authHeader)) {
-				Cookie[] cookies =cookies = request.getCookies();
-				if( cookies != null ){
-					for (int i = 0; i < cookies.length; i++){
-						Cookie cookie = cookies[i];
-						if((cookie.getName( ).equals("Authorization"))){
-							authHeader=cookie.getValue();
-						}
+			String token="";
+			if(inHeader) {
+				token = request.getHeader(paraName);
+			}
+			if(inQuery) {
+				if (StringUtils.isEmpty(token)) {//请求参数是否有Authorization
+					token = context.getString(paraName);
+				}
+			}
+			if(inCookie) {
+				if (StringUtils.isEmpty(token)) { //cookie里是否有Authorization
+					Cookie[] cookies = cookies = request.getCookies();
+					if (cookies != null) {
+						for (int i = 0; i < cookies.length; i++) {
+							Cookie cookie = cookies[i];
+							if ((cookie.getName().equals(paraName))) {
+								token = cookie.getValue();
+							}
 
+						}
 					}
 				}
 			}
-			log.debug("Authorization=" + authHeader);
-			authHeader=StringUtils.trim(authHeader);
-			if(authHeader.isEmpty()){
+			log.debug("Authorization=" + token);
+			token=StringUtils.trim(token);
+			if(token.isEmpty()){
 				return this.getResult(jsonResponse,IError.JWT_VERIFY_FAIL,"认证信息为空");
 			}
 			// 取得token""
 			String jwt="";
-			if(StringUtils.startsWithIgnoreCase(authHeader,"Bearer ")) {
-				jwt = authHeader.substring(7);
+			if(StringUtils.startsWithIgnoreCase(token,"Bearer ")) {
+				jwt = token.substring(7);
 			}else{
-				jwt=authHeader;
+				jwt=token;
 			}
 			if (StringUtils.isEmpty(jwt)) {
 				return this.getResult(jsonResponse,IError.JWT_VERIFY_FAIL,"参数有错误！[Authorization验证出错]");
 			}
-			JwtInfo jwtInfo = JwtHelper.parseJWT(jwt,
+			TokenInfo jwtInfo = JwtHelper.parseJWT(jwt,
 					uIFrameAppConfig.getRequestHander(namespace).getJwtVerify().getSecret()
 			);
-
-			String deviceid = context.getString(JwtInfo.DEVICE_ID);
-
-			if (jwtInfo.getDeviceID().equals(deviceid)) {
-				context.setObject(UiFrameConstants.PROTOCOL_REQ_JWTINFO, jwtInfo);
-				String pluginClass =
-						uIFrameAppConfig.getRequestHander(namespace).getJwtVerify().getVerifyPluginClass();
-				pluginClass=StringUtils.trim(pluginClass);
-				if (StringUtils.hasText(pluginClass)) {
-					if(pluginClass.equalsIgnoreCase("NONE")){
-						return null;
-					}
-					JwtVerifyPlugin plugin = (JwtVerifyPlugin) Class.forName(pluginClass).newInstance();
-					JwtVerifyPlugin.VerifyResult verifyResult = plugin.verify(jwtInfo);
-					if (verifyResult != null && !verifyResult.isSuccess()) {
-						return this.getResult(jsonResponse,verifyResult.getErrorCode(),verifyResult.getMessage());
-					}
-				}
-				return null;
-			} else {
-				return this.getResult(jsonResponse,IError.JWT_VERIFY_FAIL,"验证失败！");
-				//return BaseResBean.ERROR(IError.JWT_VERIFY_FAIL, "验证失败！");
+			Date date=jwtInfo.getExpiredAt();
+			if(CTime.getDate().after(date)){
+				throw new RuntimeException("token已过期");
 			}
+			context.setObject(UiFrameConstants.PROTOCOL_REQ_JWTINFO, jwtInfo);
+			String deviceid = context.getString(UiFrameConstants.PROTOCOL_REQ_DEVICE_ID);
+
+			String pluginClass = jwtVerify.getVerifyPluginClass();
+			pluginClass=StringUtils.trim(pluginClass);
+			if (StringUtils.hasText(pluginClass)) {
+				if(pluginClass.equalsIgnoreCase("NONE")){
+					return null;
+				}
+				JwtVerifyPlugin plugin = (JwtVerifyPlugin) Class.forName(pluginClass).newInstance();
+				JwtVerifyPlugin.VerifyResult verifyResult = plugin.verify(jwtInfo);
+				if (verifyResult != null && !verifyResult.isSuccess()) {
+					return this.getResult(jsonResponse,verifyResult.getErrorCode(),verifyResult.getMessage());
+				}
+			}
+			return null;
+//
+//			if (jwtInfo.getDeviceID().equals(deviceid)) {
+//
+//
+//			} else {
+//				return this.getResult(jsonResponse,IError.JWT_VERIFY_FAIL,"验证失败！");
+//				//return BaseResBean.ERROR(IError.JWT_VERIFY_FAIL, "验证失败！");
+//			}
 
 		} catch (Exception e) {
 			log.error("", e);

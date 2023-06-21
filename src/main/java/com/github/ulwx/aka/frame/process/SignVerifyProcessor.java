@@ -18,7 +18,7 @@ import org.springframework.util.AntPathMatcher;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
-@Component
+@Component("com.github.ulwx.aka.frame.process.SignVerifyProcessor")
 @Order(4)
 public class SignVerifyProcessor extends ActionSupport implements FrameProcess{
 	private static Logger log = Logger.getLogger(SignVerifyProcessor.class);
@@ -46,7 +46,8 @@ public class SignVerifyProcessor extends ActionSupport implements FrameProcess{
 				}
 			}
 			String ndjh = context.getString(UiFrameConstants.PROTOCOL_REQ_NDJH);
-			return  validateSign(namespace, request.getParameterMap(), ndjh, request,jsonResponse);
+			return  validateSign(namespace, request.getParameterMap(), ndjh,
+					request,jsonResponse);
 
 		} catch (Exception e) {
 			log.error("", e);

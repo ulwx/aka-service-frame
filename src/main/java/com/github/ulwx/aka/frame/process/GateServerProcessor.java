@@ -12,14 +12,14 @@ import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 
-@Component
+@Component("com.github.ulwx.aka.frame.process.GateServerProcessor")
 @Order(2)
 public class GateServerProcessor extends ActionSupport implements FrameProcess{
 	private static Logger log = Logger.getLogger(GateServerProcessor.class);
 	@Override
 	public String process(HttpServletRequest request,
-						  ActionMethodInfo actionMethodInfo,
-						  RequestUtils context) {
+								ActionMethodInfo actionMethodInfo,
+								RequestUtils context) {
 		// TODO Auto-generated method stub
 		String gateKey ="";
 		String gateIP = "";

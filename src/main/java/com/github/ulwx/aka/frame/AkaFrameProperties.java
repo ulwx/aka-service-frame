@@ -168,6 +168,25 @@ public class AkaFrameProperties implements InitializingBean {
         private String verifyPluginClass="";
         private List<String> excludeProtocol=new ArrayList<>();
         private String secret="";
+        private String paramIn="";
+        private String paramName="";
+
+
+        public String getParamIn() {
+            return paramIn;
+        }
+
+        public void setParamIn(String paramIn) {
+            this.paramIn = paramIn;
+        }
+
+        public String getParamName() {
+            return paramName;
+        }
+
+        public void setParamName(String paramName) {
+            this.paramName = paramName;
+        }
 
         public Boolean getEnable() {
             return enable;

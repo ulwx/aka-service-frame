@@ -15,8 +15,8 @@ public class LogDao extends AkaDaoSupport {
     public String getDS(){
         UIFrameAppConfig uFrameAppConfig=this.beanGet.bean(UIFrameAppConfig.class);
         String poolName="";
-        if(uFrameAppConfig.getStorage().getDatabse().getDs()!=null){
-            poolName=uFrameAppConfig.getStorage().getDatabse().getDs();
+        if(uFrameAppConfig.getCurStorage().getDatabse().getDs()!=null){
+            poolName=uFrameAppConfig.getCurStorage().getDatabse().getDs();
             return poolName;
         }else{
             throw new RuntimeException("没有指定数据源名称！");

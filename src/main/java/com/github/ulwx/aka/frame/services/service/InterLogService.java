@@ -73,7 +73,7 @@ public class InterLogService extends AkaServiceSupport {
 		interLog.setUserDevice(userDevice);
 		UIFrameAppConfig uiFrameAppConfig=beanGet.bean(UIFrameAppConfig.class);
 		AkaFrameProperties.LogConfig
-				logConfig= uiFrameAppConfig.getStorage().getLogConfig();
+				logConfig= uiFrameAppConfig.getCurStorage().getLogConfig();
 		boolean insert=true;
 		List<String> insertLogNotInsert = logConfig.getExcludeProtocol();
 		String compStr=pro.getClass().getName();
@@ -95,8 +95,10 @@ public class InterLogService extends AkaServiceSupport {
 
 	public void updateLog(long interLogId, int status,
 						  String errorCode,
+						  String errorMessage,
 						  HandleStatus handStatus,
-						  String ret,long start) throws Exception {
+						  String ret,
+						  long start) throws Exception {
 		if (ret.length() > 500) {
 			ret = ret.substring(0,  500);
 		}
@@ -104,6 +106,7 @@ public class InterLogService extends AkaServiceSupport {
 		updateInterLog.setId(interLogId);
 		updateInterLog.setStatus(status+"");
 		updateInterLog.setCode(errorCode);
+		updateInterLog.setErrorMessage(errorMessage);
 		updateInterLog.setDoneStatus(handStatus.value());
 		updateInterLog.setReturnStr(ret);
 		updateInterLog.setHandlerTimes((int)(System.currentTimeMillis()-start));

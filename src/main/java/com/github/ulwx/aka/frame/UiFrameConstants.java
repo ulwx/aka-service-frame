@@ -8,5 +8,6 @@ public class UiFrameConstants {
     public static final String PROTOCOL_REQ_JWTINFO="PROTOCOL_REQ_JWTINFO";
     public static final String PROTOCOL_REQ_NDJH="ndjh";
     public static final String PROTOCOL_REQ_PROTOCOL="PROTOCOL_REQ_PROTOCOL";
+    public static final String PROTOCOL_REQ_DEVICE_ID="PROTOCOL_REQ_DEVICE_ID";
 
 }
