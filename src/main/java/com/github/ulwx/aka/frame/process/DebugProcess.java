@@ -23,14 +23,12 @@ public class DebugProcess extends ActionSupport implements FrameProcess{
 
 		String queryStr=request.getQueryString();
 		if (log.isInfoEnabled()) {
-
 			Enumeration headerNames = request.getHeaderNames();
 			String headerValues = "";
 			while (headerNames.hasMoreElements()) {
 				String headerName = (String) headerNames.nextElement();
 				headerValues = headerValues + headerName + ":"
 						+ request.getHeader(headerName) + ";";
-
 			}
 			// log.debug();
 			String url = StringUtils.trim(request.getRequestURL().toString());

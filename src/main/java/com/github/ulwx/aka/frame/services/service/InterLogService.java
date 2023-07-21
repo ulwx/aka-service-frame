@@ -32,7 +32,7 @@ public class InterLogService extends AkaServiceSupport {
 		String requestNo = pro.getRequestid();
 		interLog.setRequestNo(requestNo);
 		if(pro.getRequestBody()!=null) {
-			String reqData = JSON.toJSONString(pro.getRequestBody());
+			String reqData = pro.getRequestBody();
 			if (reqData.length() > 2000) {
 				reqData = reqData.substring(0, 2000);
 			}
@@ -71,30 +71,14 @@ public class InterLogService extends AkaServiceSupport {
 		interLog.setType(pro.getInterType()+"");
 		interLog.setResponseType(pro.getCallBackType()+"");
 		interLog.setUserDevice(userDevice);
-		UIFrameAppConfig uiFrameAppConfig=beanGet.bean(UIFrameAppConfig.class);
-		AkaFrameProperties.LogConfig
-				logConfig= uiFrameAppConfig.getCurStorage().getLogConfig();
-		boolean insert=true;
-		List<String> insertLogNotInsert = logConfig.getExcludeProtocol();
-		String compStr=pro.getClass().getName();
-		if(insertLogNotInsert.isEmpty()) {
-			for(int i=0; i<insertLogNotInsert.size(); i++) {
-				if(compStr.endsWith(insertLogNotInsert.get(i).trim())) {
-					insert=false;////
-					break;
-				}
-			}
-		}
-		if(insert) {
-			long interLogId = beanGet.bean(InterLogReqDao.class).insert(interLog);
-			return interLogId;
-		}
-		return 0;
+		long interLogId = beanGet.bean(InterLogReqDao.class).insert(interLog);
+		return interLogId;
 
 	}
 
 	public void updateLog(long interLogId, int status,
 						  String errorCode,
+						  String code,
 						  String errorMessage,
 						  HandleStatus handStatus,
 						  String ret,
@@ -105,7 +89,11 @@ public class InterLogService extends AkaServiceSupport {
 		InterLogReqBean updateInterLog = new InterLogReqBean();
 		updateInterLog.setId(interLogId);
 		updateInterLog.setStatus(status+"");
-		updateInterLog.setCode(errorCode);
+		updateInterLog.setErrorCode(errorCode);
+		updateInterLog.setCode(code);
+		if (errorMessage.length() > 500) {
+			errorMessage = errorMessage.substring(0,  500);
+		}
 		updateInterLog.setErrorMessage(errorMessage);
 		updateInterLog.setDoneStatus(handStatus.value());
 		updateInterLog.setReturnStr(ret);

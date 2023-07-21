@@ -22,7 +22,7 @@ public  class Protocol {
 	private String userid;
 	private String udid;
 	private String sourceId;
-	private String protocolName;// 10001
+	private String protocolName;
 	private String ver; //协议版本号 1.0.0
 	private Long timestamp;
 	//关联单号

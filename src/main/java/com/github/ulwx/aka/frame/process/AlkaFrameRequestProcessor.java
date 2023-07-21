@@ -26,7 +26,8 @@ public class AlkaFrameRequestProcessor implements RequestProcessor {
 
     @Override
     public String onBefore(HttpServletRequest request,
-                                 ActionMethodInfo actionMethodInfo, RequestUtils context) {
+                         ActionMethodInfo actionMethodInfo,
+                         RequestUtils context) {
         try {
             UIFrameAppConfig akaFrameProperties =beanGet.bean(UIFrameAppConfig.class);
             List<FrameProcess> finalProcessors =new ArrayList<>();

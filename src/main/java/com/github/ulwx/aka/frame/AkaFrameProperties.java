@@ -1,5 +1,6 @@
 package com.github.ulwx.aka.frame;
 
+import com.ulwx.tool.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
@@ -38,6 +39,7 @@ public class AkaFrameProperties implements InitializingBean {
     public static class Database{
 
         private String ds="";
+        private Boolean enbale=null;
 
         public String getDs() {
             return ds;
@@ -45,6 +47,17 @@ public class AkaFrameProperties implements InitializingBean {
 
         public void setDs(String ds) {
             this.ds = ds;
+        }
+
+        public Boolean getEnbale() {
+            if(enbale==null && StringUtils.hasText(ds)){
+                return true;
+            }
+            return enbale;
+        }
+
+        public void setEnbale(Boolean enbale) {
+            this.enbale = enbale;
         }
     }
     public static class Storage{

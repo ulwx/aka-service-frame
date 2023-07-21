@@ -18,6 +18,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @Component("com.github.ulwx.aka.frame.process.StoreRequestProcessor")
 @Order(Integer.MAX_VALUE)
@@ -39,11 +40,31 @@ public class StoreRequestProcessor implements RequestProcessor {
     public static final String Start = "handle-start-time";
 
     @Override
-    public String onBefore(HttpServletRequest request, ActionMethodInfo actionMethodInfo, RequestUtils context) {
+    public String onBefore(HttpServletRequest request,
+                           ActionMethodInfo actionMethodInfo,
+                           RequestUtils context) {
+
+
         UIFrameAppConfig uiFrameAppConfig = beanGet.bean(UIFrameAppConfig.class);
         String namespace = actionMethodInfo.getNamespace().getName();
         AkaFrameProperties.ProtocolProperties protocolProperties = uiFrameAppConfig.getProtocolInfo(namespace);
-        if (protocolProperties == null) return null;
+        if (protocolProperties == null)  return null;
+        AkaFrameProperties.Handler handler = uiFrameAppConfig.getRequestHander(namespace);
+        if (!handler.getStorage().getDatabse().getEnbale()) {
+            return null;
+        }
+        AkaFrameProperties.LogConfig
+                logConfig = uiFrameAppConfig.getCurStorage().getLogConfig();
+
+        List<String> insertLogNotInsert = logConfig.getExcludeProtocol();
+        String compStr = actionMethodInfo.getLogicActionMethodName();
+        if (insertLogNotInsert.isEmpty()) {
+            for (int i = 0; i < insertLogNotInsert.size(); i++) {
+                if (compStr.endsWith(insertLogNotInsert.get(i).trim())) {
+                    return null;
+                }
+            }
+        }
         String builderClassName = StringUtils.trim(protocolProperties.getProtocolBuilderClass());
         if (StringUtils.isEmpty(builderClassName)) {
             return null;
@@ -60,6 +81,7 @@ public class StoreRequestProcessor implements RequestProcessor {
         context.setObject(UiFrameConstants.PROTOCOL_REQ_PROTOCOL, protocol);
         InterLogService interLogService = beanGet.bean(InterLogService.class);
         try {
+
             long interLogId = interLogService.insertLog(protocol,
                     actionMethodInfo.getActionObj().getClass());
             request.setAttribute(InsertLogID, interLogId);
@@ -72,49 +94,107 @@ public class StoreRequestProcessor implements RequestProcessor {
     }
 
 
-
     @Override
-    public boolean onFinished(HttpServletRequest request, ActionMethodInfo actionMethodInfo,
+    public void onFinished(HttpServletRequest request, ActionMethodInfo actionMethodInfo,
                               RequestUtils context, String resultViewName, Exception e,
                               ProcessorStatus status) {
+
+        UIFrameAppConfig uiFrameAppConfig = beanGet.bean(UIFrameAppConfig.class);
+        String namespace = actionMethodInfo.getNamespace().getName();
+        AkaFrameProperties.ProtocolProperties protocolProperties = uiFrameAppConfig.getProtocolInfo(namespace);
+        AkaFrameProperties.Handler handler = uiFrameAppConfig.getRequestHander(namespace);
+        if (!handler.getStorage().getDatabse().getEnbale()) {
+            return ;
+        }
+        AkaFrameProperties.LogConfig
+                logConfig = uiFrameAppConfig.getCurStorage().getLogConfig();
+
+        List<String> insertLogNotInsert = logConfig.getExcludeProtocol();
+        String compStr = actionMethodInfo.getLogicActionMethodName();
+        if (insertLogNotInsert.isEmpty()) {
+            for (int i = 0; i < insertLogNotInsert.size(); i++) {
+                if (compStr.endsWith(insertLogNotInsert.get(i).trim())) {
+                    return ;
+                }
+            }
+        }
         Long insertLogId = (Long) request.getAttribute(InsertLogID);
-        if (insertLogId == null) return true;
+        if (insertLogId == null) return ;
         InterLogService interLogService = beanGet.bean(InterLogService.class);
         Long start = (Long) request.getAttribute(Start);
         CbResult cbResult = (CbResult) request.getAttribute(WebMvcCbConstants.ResultKey);
-        String ret="";
-        if(cbResult !=null) {
-            ret = ObjectUtils.toStringUseFastJson(cbResult.getData());
-        }else{
-            ret=resultViewName;
+        String ret = "";
+        if (cbResult != null) {
+            ret = ObjectUtils.toStringUseFastJson(cbResult);
+        } else {
+            ret = resultViewName;
         }
 
         try {
-            if( e==null) {
-                if(cbResult !=null) {
-                    interLogService.updateLog(insertLogId, cbResult.getStatus(), cbResult.getError() + "",
-                            cbResult.getMessage(), HandleStatus.suc, ret, start);
-                }else{
-                    interLogService.updateLog(insertLogId, Status.SUC,  "0",
-                           "", HandleStatus.suc, ret, start);
+            if (e == null) {
+                if (cbResult != null) {
+                    String code = "";
+                    if (protocolProperties != null) {
+                        String builderClassName = StringUtils.trim(protocolProperties.getProtocolBuilderClass());
+                        if (!StringUtils.isEmpty(builderClassName)) {
+                            try {
+                                ProtocolBuilder builder = (ProtocolBuilder) Class.forName(builderClassName).getConstructor().newInstance();
+                                StoreResultInfo storeResultInfo = builder.buildResult(cbResult);
+                               if(storeResultInfo!=null) {
+                                   code = storeResultInfo.getCode();
+                               }
+                            } catch (Exception ex) {
+                                log.error("" + ex, ex);
+                            }
+                        }
+                    }
+
+                    if(cbResult.getStatus().equals(Status.SUC)) {
+                        interLogService.updateLog(insertLogId,
+                                cbResult.getStatus(),
+                                cbResult.getError() + "",
+                                code,
+                                "",
+                                HandleStatus.suc,
+                                ret,
+                                start);
+                    }else{
+                        interLogService.updateLog(insertLogId,
+                                cbResult.getStatus(),
+                                cbResult.getError() + "",
+                                code,
+                                cbResult.getMessage(),
+                                HandleStatus.fail,
+                                ret,
+                                start);
+                    }
+                } else {
+                    interLogService.updateLog(insertLogId, Status.SUC,
+                            "0",
+                            "",
+                            "",
+                            HandleStatus.suc, ret, start);
                 }
-            }else{
-                interLogService.updateLog(insertLogId, Status.ERR, "0", e + "",
+            } else {
+                Throwable throwable = e;
+                while (throwable.getCause() != null) {
+                    throwable = throwable.getCause();
+                }
+
+                interLogService.updateLog(insertLogId, Status.ERR,
+                        "0", "",
+                        throwable + "",
                         HandleStatus.fail,
                         ret,
                         start);
-
             }
-
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
 
 
-        return true;
+        return ;
     }
-
-
 
 
 }

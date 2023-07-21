@@ -22,7 +22,9 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * jwt 验证
@@ -44,6 +46,11 @@ public class JwtVerifyProcessor extends ActionSupport implements FrameProcess{
 		UIFrameAppConfig uIFrameAppConfig= BeanGet.getBean(UIFrameAppConfig.class,request);
 		HttpSession session = request.getSession();
 		AkaFrameProperties.JwtVerify jwtVerify=uIFrameAppConfig.getRequestHander(namespace).getJwtVerify();
+
+		String paramIn=StringUtils.trim(jwtVerify.getParamIn());
+		String paraName=StringUtils.trim(jwtVerify.getParamName());
+		String token=this.getToken(paramIn,paraName,request);
+
 		Boolean isJwtValidate = jwtVerify.getEnable();
 		if(isJwtValidate!=null && !isJwtValidate) {
 			return null;
@@ -94,49 +101,6 @@ public class JwtVerifyProcessor extends ActionSupport implements FrameProcess{
 				}
 			}
 			//request的header里是否有Authorization
-			String paramIn=StringUtils.trim(jwtVerify.getParamIn());
-			String paraName=StringUtils.trim(jwtVerify.getParamName());
-			boolean inHeader=false;
-			boolean inQuery=false;
-			boolean inCookie=false;
-			if(!paramIn.isEmpty()){
-				String[] strs= ArrayUtils.trim(paramIn.split(","));
-				for(int i=0; i<strs.length; i++){
-					//header、query、cookie
-					if(strs[i].equals("header")) inHeader=true;
-					if(strs[i].equals("query")) inQuery=true;
-					if(strs[i].equals("cookie")) inCookie=true;
-				}
-			}else{
-				inHeader=true;
-				inQuery=true;
-				inCookie=true;
-			}
-			String token="";
-			if(inHeader) {
-				token = request.getHeader(paraName);
-			}
-			if(inQuery) {
-				if (StringUtils.isEmpty(token)) {//请求参数是否有Authorization
-					token = context.getString(paraName);
-				}
-			}
-			if(inCookie) {
-				if (StringUtils.isEmpty(token)) { //cookie里是否有Authorization
-					Cookie[] cookies = cookies = request.getCookies();
-					if (cookies != null) {
-						for (int i = 0; i < cookies.length; i++) {
-							Cookie cookie = cookies[i];
-							if ((cookie.getName().equals(paraName))) {
-								token = cookie.getValue();
-							}
-
-						}
-					}
-				}
-			}
-			log.debug("Authorization=" + token);
-			token=StringUtils.trim(token);
 			if(token.isEmpty()){
 				return this.getResult(jsonResponse,IError.JWT_VERIFY_FAIL,"认证信息为空");
 			}
@@ -173,18 +137,9 @@ public class JwtVerifyProcessor extends ActionSupport implements FrameProcess{
 				}
 			}
 			return null;
-//
-//			if (jwtInfo.getDeviceID().equals(deviceid)) {
-//
-//
-//			} else {
-//				return this.getResult(jsonResponse,IError.JWT_VERIFY_FAIL,"验证失败！");
-//				//return BaseResBean.ERROR(IError.JWT_VERIFY_FAIL, "验证失败！");
-//			}
 
 		} catch (Exception e) {
 			log.error("", e);
-			//return BaseResBean.ERROR(IError.JWT_VERIFY_FAIL, "验证出错[" + e + "]");
 			return this.getResult(jsonResponse,IError.JWT_VERIFY_FAIL,"验证出错[" + e + "]");
 		}
 
@@ -199,6 +154,54 @@ public class JwtVerifyProcessor extends ActionSupport implements FrameProcess{
 			}
 	}
 
+	private String getToken(String paramIn,String paraName,HttpServletRequest request){
+		boolean inHeader=false;
+		boolean inQuery=false;
+		boolean inCookie=false;
+		if(!paramIn.isEmpty()){
+			String[] strs= ArrayUtils.trim(paramIn.split(","));
+			for(int i=0; i<strs.length; i++){
+				//header、query、cookie
+				if(strs[i].equals("header")) inHeader=true;
+				if(strs[i].equals("query")) inQuery=true;
+				if(strs[i].equals("cookie")) inCookie=true;
+			}
+		}else{
+			inHeader=true;
+			inQuery=true;
+			inCookie=true;
+		}
+		String token="";
+		if(inHeader) {
+			token = request.getHeader(paraName);
+		}
+		if(inQuery) {
+			if (StringUtils.isEmpty(token)) {//请求参数是否有Authorization
+				token = request.getParameter(paraName);
+			}
+		}
+		if(inCookie) {
+			if (StringUtils.isEmpty(token)) { //cookie里是否有Authorization
+				Cookie[] cookies = cookies = request.getCookies();
+				if (cookies != null) {
+					for (int i = 0; i < cookies.length; i++) {
+						Cookie cookie = cookies[i];
+						if ((cookie.getName().equals(paraName))) {
+							token = cookie.getValue();
+						}
 
+					}
+				}
+			}
+		}
+		log.debug("Authorization=" + token);
+		token=StringUtils.trim(token);
+
+		Map<String,String> verifyInfo=new HashMap<>();
+		verifyInfo.put("paramIn",paramIn);
+		verifyInfo.put("paraName",paraName);
+		request.setAttribute("aka.jwt.vierify.info",verifyInfo);
+		return token;
+	}
 
 }

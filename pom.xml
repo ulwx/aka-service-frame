@@ -7,9 +7,9 @@
 	<version>2.0-SNAPSHOT</version>
 	<parent>
 		<groupId>com.github.ulwx</groupId>
-		<artifactId>aka-common-cloud-parent</artifactId>
+		<artifactId>aka-common-parent</artifactId>
 		<version>2.0-SNAPSHOT</version>
-		<relativePath>../aka-common-cloud-parent/pom.xml</relativePath>
+		<relativePath>../aka-common-parent/pom.xml</relativePath>
 	</parent>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -36,8 +36,14 @@
 			<groupId>com.github.ulwx</groupId>
 			<artifactId>aka-admin-base</artifactId>
 		</dependency>
-
-
+<!--		<dependency>-->
+<!--			<groupId>org.springframework.cloud</groupId>-->
+<!--			<artifactId>spring-cloud-starter-bootstrap</artifactId>-->
+<!--		</dependency>-->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>com.auth0</groupId>
 			<artifactId>java-jwt</artifactId>

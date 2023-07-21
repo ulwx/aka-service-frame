@@ -6,13 +6,14 @@ import com.github.ulwx.aka.webmvc.WebMvcActiionContextConst;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-
+@RefreshScope
 @Component("com.github.ulwx.aka.frame.UIFrameAppConfig")
 public class UIFrameAppConfig implements InitializingBean  {
 	private AkaFrameProperties akaFrameProperties;
@@ -23,7 +24,9 @@ public class UIFrameAppConfig implements InitializingBean  {
 		return beanGet;
 	}
 
+	public UIFrameAppConfig(){
 
+	}
 	@Autowired
 	public void setBeanGet(BeanGet beanGet) {
 		this.beanGet = beanGet;
