@@ -62,7 +62,13 @@ public class UIFrameAppConfig implements InitializingBean  {
 	}
 
 	public AkaFrameProperties.Handler getRequestHander(String namespace){
-		return this.requestHandlerMap.get(getProtocolInfo(namespace).getHandler());
+		AkaFrameProperties.ProtocolProperties protocolProperties=getProtocolInfo(namespace);
+		if(protocolProperties==null) {
+			return null;
+		}
+		String handlerName = protocolProperties.getHandler();
+		return this.requestHandlerMap.get(handlerName);
+
 	}
 
 	public String getCurNameSpace(){
@@ -74,7 +80,11 @@ public class UIFrameAppConfig implements InitializingBean  {
 		return getRequestHander(getCurNameSpace()).getStorage();
 	}
 	public AkaFrameProperties.Handler getCurRequestHander(){
-		return this.requestHandlerMap.get(getProtocolInfo(this.getCurNameSpace()).getHandler());
+		AkaFrameProperties.ProtocolProperties protocolProperties=getProtocolInfo(this.getCurNameSpace());
+		if(protocolProperties==null) {
+			return null;
+		}
+		return this.requestHandlerMap.get( protocolProperties.getHandler());
 	}
 
 	public static void main(String[] args) throws Exception {

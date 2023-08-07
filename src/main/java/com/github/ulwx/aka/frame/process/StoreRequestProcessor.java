@@ -102,7 +102,9 @@ public class StoreRequestProcessor implements RequestProcessor {
         UIFrameAppConfig uiFrameAppConfig = beanGet.bean(UIFrameAppConfig.class);
         String namespace = actionMethodInfo.getNamespace().getName();
         AkaFrameProperties.ProtocolProperties protocolProperties = uiFrameAppConfig.getProtocolInfo(namespace);
+        if(protocolProperties==null) return;
         AkaFrameProperties.Handler handler = uiFrameAppConfig.getRequestHander(namespace);
+        if(handler==null) return;
         if (!handler.getStorage().getDatabse().getEnbale()) {
             return ;
         }
