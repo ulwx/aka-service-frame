@@ -21,12 +21,16 @@
 				<version>3.0.2</version>
 				<configuration>
 					<excludes>
-						<exclude>*.xml</exclude>
-						<exclude>aka*.properties</exclude>
+						<exclude>log*.xml</exclude>
+						<exclude>log*.properties</exclude>
 					</excludes>
+					<archive>
+						<manifest>
+							<useUniqueVersions>false</useUniqueVersions>
+						</manifest>
+					</archive>
 				</configuration>
 			</plugin>
-
 		</plugins>
 	</build>
 	<dependencies>
