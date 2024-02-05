@@ -5,23 +5,21 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 @ConfigurationProperties(AkaFrameProperties.FRAME_PROPERTIES_PREFX)
 public class AkaFrameProperties implements InitializingBean {
     public final static String  FRAME_PROPERTIES_PREFX="aka.frame";
     @NestedConfigurationProperty
-    private List<ProtocolProperties> protocols=new ArrayList<>();
+    private Map<String,ProtocolProperties> protocols=new LinkedHashMap<>();
     private Map<String, Handler> handlers=new HashMap<>();
-    public List<ProtocolProperties> getProtocols() {
+
+    public Map<String, ProtocolProperties> getProtocols() {
         return protocols;
     }
 
-    public void setProtocols(List<ProtocolProperties> protocols) {
+    public void setProtocols(Map<String, ProtocolProperties> protocols) {
         this.protocols = protocols;
     }
 

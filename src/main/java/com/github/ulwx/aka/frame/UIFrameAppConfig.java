@@ -44,9 +44,12 @@ public class UIFrameAppConfig implements InitializingBean  {
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		akaFrameProperties.getProtocols().stream().forEach(p-> {
-			namespaceToProtocolProperties.put(p.getNamesapce(),p);
-		});
+		Map<String, AkaFrameProperties.ProtocolProperties> map= akaFrameProperties.getProtocols();
+		for(String key: map.keySet()){
+			AkaFrameProperties.ProtocolProperties protocolProperties=map.get(key);
+			protocolProperties.setNamesapce(key);;
+		}
+		namespaceToProtocolProperties.putAll(akaFrameProperties.getProtocols());
 		requestHandlerMap=akaFrameProperties.getHandlers();
 
 
