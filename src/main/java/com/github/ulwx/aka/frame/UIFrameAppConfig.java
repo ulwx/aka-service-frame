@@ -25,7 +25,7 @@ public class UIFrameAppConfig implements InitializingBean  {
 	}
 
 	public UIFrameAppConfig(){
-
+		int i=0;
 	}
 	@Autowired
 	public void setBeanGet(BeanGet beanGet) {

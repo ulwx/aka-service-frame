@@ -9,7 +9,7 @@ aka:
         package-name: com.github.ulwx.aka.frame.web.action
         url-maps:
           "[*_*_*]":
-            allow-methods: post,get
+             allow-methods: post,get
 #  frame:
 #    protocols:
 #       prococoltest:
