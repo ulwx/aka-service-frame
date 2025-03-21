@@ -6,6 +6,7 @@ import com.github.ulwx.aka.frame.UIFrameAppConfig;
 import com.github.ulwx.aka.frame.services.dao.InterLogReqDao;
 import com.github.ulwx.aka.frame.services.dao.impl.model.InterLogReq;
 import com.github.ulwx.aka.frame.services.domain.InterLogReqBean;
+import com.ulwx.tool.StringUtils;
 
 import java.time.LocalDateTime;
 
@@ -14,8 +15,8 @@ public class InterLogReqDaoImpl extends InterLogReqDao {
 	public  String getDS(){
 		UIFrameAppConfig akaFrameProperties=this.beanGet.bean(UIFrameAppConfig.class);
 		String poolName="";
-		if(akaFrameProperties.getCurStorage().getDatabse().getDs()!=null){
-			poolName=akaFrameProperties.getCurStorage().getDatabse().getDs();
+		if(StringUtils.hasText(akaFrameProperties.getAkaFrameProperties().getDsName())){
+			poolName=akaFrameProperties.getAkaFrameProperties().getDsName();
 			return poolName;
 		}else{
 			throw new RuntimeException("没有指定数据源名称！");

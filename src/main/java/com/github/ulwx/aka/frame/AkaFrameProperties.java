@@ -14,9 +14,19 @@ public class AkaFrameProperties implements InitializingBean {
     @NestedConfigurationProperty
     private Map<String,ProtocolProperties> protocols=new LinkedHashMap<>();
     private Map<String, Handler> handlers=new HashMap<>();
+    private String dsName;
+
 
     public Map<String, ProtocolProperties> getProtocols() {
         return protocols;
+    }
+
+    public String getDsName() {
+        return dsName;
+    }
+
+    public void setDsName(String dsName) {
+        this.dsName = dsName;
     }
 
     public void setProtocols(Map<String, ProtocolProperties> protocols) {
@@ -35,20 +45,9 @@ public class AkaFrameProperties implements InitializingBean {
     public void afterPropertiesSet()  {
     }
     public static class Database{
-
-        private String ds="";
         private Boolean enbale=null;
-
-        public String getDs() {
-            return ds;
-        }
-
-        public void setDs(String ds) {
-            this.ds = ds;
-        }
-
         public Boolean getEnbale() {
-            if(enbale==null && StringUtils.hasText(ds)){
+            if(enbale==null ){
                 return true;
             }
             return enbale;

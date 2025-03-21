@@ -22,11 +22,6 @@
                 {field: 'id', title: '编号', align: 'center',width:80,sortable:true},
                 {field: 'requestNo',title: '业务请求订单号', align: 'center',width:145,sortable:true},
                 {field: 'type', title: '类型', align: 'center',width:60,sortable:true},
-                {field: 'reqCode', title: '接口逻辑', align: 'center',width:80,sortable:true,
-                	formatter:function(value,row,index){
-                        return "<a href='javascript:showMsg(\""+index+"\",\"reqCode\",\"接口逻辑\")'>查看</a>";
-                    } 	
-                },
                 {field: 'className', title: '处理类', align: 'center',width:150,sortable:true},
                 {field: 'serviceName', title: '接口名称', align: 'center',width:150,sortable:true},
                 {field: 'classReqArgs', title: '请求参数', align: 'center',width:80,sortable:true,

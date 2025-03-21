@@ -5,12 +5,13 @@ spring:
 aka:
   webvc:
     namespaces: #下面定义命名空间名称
-      testapi:
+      frame:
         package-name: com.github.ulwx.aka.frame.web.action
         url-maps:
           "[*_*_*]":
              allow-methods: post,get
 #  frame:
+#    ds-name: common-frame
 #    protocols:
 #       prococoltest:
 #        ## namesapce对应aka.webvc.namespaces.prococoltest
@@ -61,8 +62,6 @@ aka:
 #            #接口日志和异步响应日志使用关系型数据库插入
 #          databse:
 #            enbale: true
-#            #接口日志和异步响应日志所在都数据库数据源名称
-#            ds: common-frame
 
 
 
