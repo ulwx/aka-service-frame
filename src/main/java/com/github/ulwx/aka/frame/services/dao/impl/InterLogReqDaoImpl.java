@@ -34,9 +34,9 @@ public class InterLogReqDaoImpl extends InterLogReqDao {
 	}
 	public  long insert(InterLogReqBean req) throws Exception{
 		req.setAddTime(LocalDateTime.now());
-		if(req.getReqData()!=null && req.getReqData().length()>1980) {
-			req.setReqData(req.getReqData().substring(0, 1980)+"...");
-		}
+//		if(req.getReqData()!=null && req.getReqData().length()>1980) {
+//			req.setReqData(req.getReqData().substring(0, 1980)+"...");
+//		}
 		DbContext.setReflectClass(InterLogReq.class);
 		return this.template.insertReturnKeyBy(req);
 	}
