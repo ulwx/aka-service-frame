@@ -33,15 +33,15 @@ public class InterLogService extends AkaServiceSupport {
 		interLog.setRequestNo(requestNo);
 		if(pro.getRequestBody()!=null) {
 			String reqData = pro.getRequestBody();
-			if (reqData.length() > 2000) {
-				reqData = reqData.substring(0, 2000);
-			}
+//			if (reqData.length() > 2000) {
+//				reqData = reqData.substring(0, 2000);
+//			}
 			interLog.setReqData(reqData);
 		}
 		String reqArgs = ObjectUtils.toStringUseFastJson(pro.getRequestMap(), false);
-		if (reqArgs.length() > 1000) {
-			reqArgs = reqArgs.substring(0, 1000);
-		}
+//		if (reqArgs.length() > 1000) {
+//			reqArgs = reqArgs.substring(0, 1000);
+//		}
 		interLog.setClassReqArgs(reqArgs);
 		interLog.setDoneStatus(HandleStatus.doing.value());
 		String mdcLogid = MDC.get("logid");
@@ -83,17 +83,17 @@ public class InterLogService extends AkaServiceSupport {
 						  HandleStatus handStatus,
 						  String ret,
 						  long start) throws Exception {
-		if (ret.length() > 500) {
-			ret = ret.substring(0,  500);
-		}
+//		if (ret.length() > 500) {
+//			ret = ret.substring(0,  500);
+//		}
 		InterLogReqBean updateInterLog = new InterLogReqBean();
 		updateInterLog.setId(interLogId);
 		updateInterLog.setStatus(status+"");
 		updateInterLog.setErrorCode(errorCode);
 		updateInterLog.setCode(code);
-		if (errorMessage.length() > 500) {
-			errorMessage = errorMessage.substring(0,  500);
-		}
+//		if (errorMessage.length() > 500) {
+//			errorMessage = errorMessage.substring(0,  500);
+//		}
 		updateInterLog.setErrorMessage(errorMessage);
 		updateInterLog.setDoneStatus(handStatus.value());
 		updateInterLog.setReturnStr(ret);
