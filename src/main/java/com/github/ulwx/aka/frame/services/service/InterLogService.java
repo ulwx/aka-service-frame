@@ -11,6 +11,7 @@ import com.github.ulwx.aka.webmvc.AkaServiceSupport;
 import com.github.ulwx.aka.webmvc.web.action.ActionSupport;
 import com.ulwx.tool.IpUtils;
 import com.ulwx.tool.ObjectUtils;
+import com.ulwx.tool.SnowflakeIdWorker;
 import com.ulwx.tool.StringUtils;
 import org.slf4j.MDC;
 
@@ -30,6 +31,9 @@ public class InterLogService extends AkaServiceSupport {
 		Class<?> clazz = actionClass;
 		InterLogReqBean interLog = new InterLogReqBean();
 		String requestNo = pro.getRequestid();
+		if(StringUtils.isEmpty(requestNo)){
+			requestNo= SnowflakeIdWorker.instance.nextId()+"";
+		}
 		interLog.setRequestNo(requestNo);
 		if(pro.getRequestBody()!=null) {
 			String reqData = pro.getRequestBody();
